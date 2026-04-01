@@ -18,7 +18,7 @@
   },
   "credentials_needed": ["client_id", "client_secret"],
   "user_auth_instructions": "1. Click 'Connect' to link your Google account.\n2. Sign in with your Google Workspace account.\n3. Review and approve the requested permissions.\n4. You'll be redirected back automatically.\n\nNote: Your organization admin must first set up a Google Cloud OAuth Client ID.",
-  "setup_notes": "Requires a Google Cloud project with OAuth 2.0 Client ID (Web application type) configured.\n\nAdmin setup:\n1. Go to https://console.cloud.google.com/apis/credentials\n2. Create OAuth 2.0 Client ID (type: Web application)\n3. Add authorized redirect URI: {your_app_url}/api/v1/mcp-servers/{server_id}/oauth/callback\n4. Enable the Google Workspace APIs you need (Drive, Gmail, Calendar, etc.)\n5. Enter the Client ID and Client Secret in the server configuration\n\nAlso requires the Google Workspace CLI to be installed:\n  npm install -g @googleworkspace/cli",
+  "setup_notes": "The Google Workspace CLI (gws) is pre-installed in the application.\n\nRequires a Google Cloud project with OAuth 2.0 Client ID (Web application type).\n\nAdmin setup:\n1. Go to https://console.cloud.google.com/apis/credentials\n2. Create OAuth 2.0 Client ID (type: Web application)\n3. Add authorized redirect URI:\n   {your_app_url}/api/v1/mcp-servers/{server_id}/oauth/callback\n4. Enable the Google Workspace APIs you need:\n   - Drive, Gmail, Calendar, Sheets, Docs, Chat\n5. Enter the Client ID and Client Secret in the server configuration",
   "env_mapping": {
     "GOOGLE_WORKSPACE_CLI_TOKEN": "{{user_oauth_token}}",
     "GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE": "{{org_credentials_file}}"
