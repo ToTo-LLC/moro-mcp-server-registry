@@ -1,0 +1,26 @@
+{
+  "id": "hubspot",
+  "name": "HubSpot",
+  "description": "Manage HubSpot CRM contacts, companies, deals, and tickets. Search and update records, track sales pipelines, and automate CRM workflows through AI chat.",
+  "category": "CRM",
+  "icon_url": "icons/hubspot.svg",
+  "server_type": "stdio",
+  "command": "npx",
+  "args": ["-y", "@hubspot/mcp-server"],
+  "url": null,
+  "org_auth_type": "api_key",
+  "user_auth_type": "none",
+  "oauth_config": null,
+  "credentials_needed": ["PRIVATE_APP_ACCESS_TOKEN"],
+  "user_auth_instructions": null,
+  "setup_notes": "Requires a HubSpot Private App access token.\n\nAdmin setup:\n1. Go to your HubSpot account Settings > Integrations > Private Apps\n2. Click 'Create a private app'\n3. Name your app and configure the required scopes:\n   - crm.objects.contacts.read / write\n   - crm.objects.companies.read / write\n   - crm.objects.deals.read / write\n   - crm.objects.tickets.read / write\n   - crm.schemas.contacts.read\n   - crm.schemas.companies.read\n   - crm.schemas.deals.read\n4. Click 'Create app' and copy the access token immediately (it won't be shown again)\n5. Enter the access token in the server configuration\n\nHubSpot also supports OAuth 2.0 for public apps (authorization URL: https://app.hubspot.com/oauth/authorize, token URL: https://api.hubapi.com/oauth/v1/token). This template uses Private App tokens for simpler setup.\n\nNote: This is the official @hubspot/mcp-server package from HubSpot, currently in public beta.",
+  "env_mapping": {
+    "PRIVATE_APP_ACCESS_TOKEN": "{{org_credential:PRIVATE_APP_ACCESS_TOKEN}}"
+  },
+  "tags": ["hubspot", "crm", "sales", "contacts", "deals", "marketing", "pipeline"],
+  "source": {
+    "package": "@hubspot/mcp-server",
+    "repository": "https://github.com/HubSpot/hubspot-mcp-server",
+    "docs": "https://developers.hubspot.com/mcp"
+  }
+}

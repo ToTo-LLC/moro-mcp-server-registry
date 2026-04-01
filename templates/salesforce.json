@@ -1,0 +1,33 @@
+{
+  "id": "salesforce",
+  "name": "Salesforce",
+  "description": "Query, create, and manage Salesforce CRM data including leads, contacts, accounts, opportunities, and custom objects through AI chat.",
+  "category": "CRM",
+  "icon_url": "icons/salesforce.svg",
+  "server_type": "stdio",
+  "command": "npx",
+  "args": ["-y", "@salesforce/mcp", "--orgs", "DEFAULT_TARGET_ORG", "--toolsets", "orgs,metadata,data,users"],
+  "url": null,
+  "org_auth_type": "oauth2",
+  "user_auth_type": "none",
+  "oauth_config": {
+    "authorization_url": "https://login.salesforce.com/services/oauth2/authorize",
+    "token_url": "https://login.salesforce.com/services/oauth2/token",
+    "scopes": "full refresh_token",
+    "scope_param_name": "scope"
+  },
+  "credentials_needed": ["SALESFORCE_INSTANCE_URL", "SALESFORCE_CLIENT_ID", "SALESFORCE_CLIENT_SECRET"],
+  "user_auth_instructions": null,
+  "setup_notes": "Requires a Salesforce Connected App with OAuth 2.0 configured.\n\nAdmin setup:\n1. In Salesforce Setup, go to App Manager and create a New Connected App\n2. Enable OAuth Settings and set a Callback URL\n3. Select OAuth scopes: 'Full access (full)' and 'Perform requests at any time (refresh_token, offline_access)'\n4. Save and copy the Consumer Key (Client ID) and Consumer Secret\n5. Note your Salesforce instance URL (e.g., https://your-domain.my.salesforce.com)\n\nThis template uses the official @salesforce/mcp package from the Salesforce CLI team, which provides 60+ tools for interacting with Salesforce orgs. It requires Salesforce CLI authentication — run 'sf org login web' to authenticate your org before use.\n\nFor sandbox environments, use https://test.salesforce.com as the authorization/token base URL instead of https://login.salesforce.com.",
+  "env_mapping": {
+    "SALESFORCE_INSTANCE_URL": "{{org_credential:SALESFORCE_INSTANCE_URL}}",
+    "SALESFORCE_CLIENT_ID": "{{org_credential:SALESFORCE_CLIENT_ID}}",
+    "SALESFORCE_CLIENT_SECRET": "{{org_credential:SALESFORCE_CLIENT_SECRET}}"
+  },
+  "tags": ["salesforce", "crm", "sales", "leads", "contacts", "accounts", "opportunities"],
+  "source": {
+    "package": "@salesforce/mcp",
+    "repository": "https://github.com/salesforcecli/mcp",
+    "docs": "https://developer.salesforce.com/blogs/2025/06/level-up-your-developer-tools-with-salesforce-dx-mcp"
+  }
+}

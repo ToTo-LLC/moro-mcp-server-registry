@@ -1,0 +1,32 @@
+{
+  "id": "zoho",
+  "name": "Zoho CRM",
+  "description": "Access Zoho CRM, Desk, and Books data. Manage leads, contacts, deals, support tickets, and invoices through AI chat.",
+  "category": "CRM",
+  "icon_url": "icons/zoho.svg",
+  "server_type": "stdio",
+  "command": "npx",
+  "args": ["-y", "@macnishio/zoho-mcp-server1"],
+  "url": null,
+  "org_auth_type": "oauth2",
+  "user_auth_type": "none",
+  "oauth_config": {
+    "authorization_url": "https://accounts.zoho.com/oauth/v2/auth",
+    "token_url": "https://accounts.zoho.com/oauth/v2/token",
+    "scopes": "ZohoCRM.modules.ALL,ZohoCRM.settings.ALL,ZohoBooks.fullaccess.all",
+    "scope_param_name": "scope"
+  },
+  "credentials_needed": ["ZOHO_CRM_CLIENT_ID", "ZOHO_CRM_CLIENT_SECRET"],
+  "user_auth_instructions": null,
+  "setup_notes": "Requires Zoho OAuth 2.0 client credentials.\n\nAdmin setup:\n1. Go to https://api-console.zoho.com/ and create a new Server-based Application\n2. Set a valid Redirect URI for your application\n3. Copy the Client ID and Client Secret\n4. Generate a refresh token using the Self Client option or authorization code flow\n5. Enter the Client ID and Client Secret in the server configuration\n\nThis template uses the @macnishio/zoho-mcp-server1 community package which supports Zoho CRM, Desk, and Books integration. Additional credentials (ZOHO_DESK_CLIENT_ID, ZOHO_DESK_CLIENT_SECRET, ZOHO_BOOKS_CLIENT_ID, ZOHO_BOOKS_CLIENT_SECRET) can be configured for Desk and Books access.\n\nNote: Zoho has regional data centers. For non-US accounts, replace 'zoho.com' with the appropriate domain:\n- EU: zoho.eu\n- India: zoho.in\n- Australia: zoho.com.au\n- China: zoho.com.cn\n- Japan: zoho.jp\n- Canada: zohocloud.ca\n- Saudi Arabia: zoho.sa",
+  "env_mapping": {
+    "ZOHO_CRM_CLIENT_ID": "{{org_credential:ZOHO_CRM_CLIENT_ID}}",
+    "ZOHO_CRM_CLIENT_SECRET": "{{org_credential:ZOHO_CRM_CLIENT_SECRET}}"
+  },
+  "tags": ["zoho", "crm", "sales", "leads", "contacts", "deals", "helpdesk", "invoicing"],
+  "source": {
+    "package": "@macnishio/zoho-mcp-server1",
+    "repository": "https://github.com/macnishio/zoho-mcp-server",
+    "docs": "https://www.zoho.com/crm/developer/docs/api/v8/oauth-overview.html"
+  }
+}
