@@ -1,0 +1,34 @@
+{
+  "id": "microsoft-teams",
+  "name": "Microsoft Teams",
+  "description": "Search messages, send chats, manage channels, and interact with Microsoft Teams through AI chat via the Microsoft Graph API.",
+  "category": "Communication",
+  "icon_url": "icons/microsoft-teams.svg",
+  "server_type": "stdio",
+  "command": "npx",
+  "args": ["-y", "@floriscornel/teams-mcp@latest"],
+  "url": null,
+  "org_auth_type": "oauth2",
+  "user_auth_type": "oauth2",
+  "oauth_config": {
+    "authorization_url": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+    "token_url": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+    "scopes": "User.Read User.ReadBasic.All Team.ReadBasic.All Channel.ReadBasic.All ChannelMessage.Read.All ChannelMessage.Send Chat.ReadWrite TeamMember.Read.All Files.ReadWrite.All offline_access",
+    "scope_param_name": "scope"
+  },
+  "credentials_needed": ["AZURE_CLIENT_ID", "AZURE_CLIENT_SECRET", "AZURE_TENANT_ID"],
+  "user_auth_instructions": "1. Click 'Connect' to link your Microsoft Teams account.\n2. Sign in with your work or school Microsoft account.\n3. Review and approve the requested permissions for Teams access.\n4. You'll be redirected back automatically.\n\nNote: Your organization admin must first register an Azure AD application with Teams permissions.",
+  "setup_notes": "Requires an Azure AD (Entra ID) app registration with delegated Microsoft Graph permissions for Teams.\n\nAdmin setup:\n1. Go to https://portal.azure.com → Azure Active Directory → App registrations → New registration\n2. Set redirect URI: {your_app_url}/api/v1/mcp-servers/{server_id}/oauth/callback\n3. Under 'Certificates & secrets', create a new client secret\n4. Under 'API permissions', add Microsoft Graph delegated permissions:\n   - User.Read, User.ReadBasic.All\n   - Team.ReadBasic.All, Channel.ReadBasic.All\n   - ChannelMessage.Read.All, ChannelMessage.Send\n   - Chat.ReadWrite, TeamMember.Read.All\n   - Files.ReadWrite.All (for file uploads)\n5. Grant admin consent for the permissions\n6. Enter the Application (client) ID, Client Secret, and Tenant ID\n\nThe server supports a read-only mode via the TEAMS_MCP_READ_ONLY=true environment variable.\nSet AZURE_TENANT_ID to your Azure AD tenant ID, or 'common' for multi-tenant apps.\n\nThe server provides an AUTH_TOKEN environment variable for passing a pre-existing Microsoft Graph access token directly, bypassing interactive login.",
+  "env_mapping": {
+    "AZURE_CLIENT_ID": "{{org_credential:AZURE_CLIENT_ID}}",
+    "AZURE_CLIENT_SECRET": "{{org_credential:AZURE_CLIENT_SECRET}}",
+    "AZURE_TENANT_ID": "{{org_credential:AZURE_TENANT_ID}}",
+    "AUTH_TOKEN": "{{user_oauth_token}}"
+  },
+  "tags": ["microsoft", "teams", "messaging", "communication", "chat", "channels"],
+  "source": {
+    "package": "@floriscornel/teams-mcp",
+    "repository": "https://github.com/floriscornel/teams-mcp",
+    "docs": "https://learn.microsoft.com/en-us/graph/api/resources/teams-api-overview"
+  }
+}

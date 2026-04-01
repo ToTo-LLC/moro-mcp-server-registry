@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="10" fill="#6264A7"/>
+  <!-- Simplified Teams icon: T letter with people silhouette -->
+  <text x="24" y="33" font-family="Arial,sans-serif" font-size="26" font-weight="bold" fill="white" text-anchor="middle">T</text>
+  <!-- Small person icon -->
+  <circle cx="36" cy="14" r="3.5" fill="white" opacity="0.8"/>
+  <path d="M32 24c0-2.2 1.8-4 4-4s4 1.8 4 4v1h-8v-1z" fill="white" opacity="0.8"/>
+</svg>

@@ -1,0 +1,27 @@
+{
+  "id": "slack",
+  "name": "Slack",
+  "description": "Send messages, search conversations, manage channels, and access Slack workspace data through AI chat.",
+  "category": "Communication",
+  "icon_url": "icons/slack.svg",
+  "server_type": "stdio",
+  "command": "npx",
+  "args": ["-y", "@modelcontextprotocol/server-slack"],
+  "url": null,
+  "org_auth_type": "api_key",
+  "user_auth_type": "none",
+  "oauth_config": null,
+  "credentials_needed": ["SLACK_BOT_TOKEN", "SLACK_TEAM_ID"],
+  "user_auth_instructions": null,
+  "setup_notes": "Requires a Slack Bot Token and Team ID.\n\nAdmin setup:\n1. Go to https://api.slack.com/apps and create a new app (or use an existing one)\n2. Under 'OAuth & Permissions', add the following Bot Token Scopes:\n   - channels:history, channels:read\n   - chat:write\n   - groups:history, groups:read\n   - im:history, im:read\n   - mpim:history, mpim:read\n   - users:read\n   - search:read\n   - files:read\n3. Install the app to your workspace\n4. Copy the 'Bot User OAuth Token' (starts with xoxb-)\n5. Find your Team ID: open Slack in a browser, the URL contains the team ID (e.g., T01234ABCDE)\n6. Enter the Bot Token and Team ID in the server configuration\n\nNote: Slack also offers an official MCP server at mcp.slack.com (HTTP transport with first-party OAuth), but it requires Marketplace-published or internal apps. This template uses the community @modelcontextprotocol/server-slack package which works with any Slack app.",
+  "env_mapping": {
+    "SLACK_BOT_TOKEN": "{{org_credential:SLACK_BOT_TOKEN}}",
+    "SLACK_TEAM_ID": "{{org_credential:SLACK_TEAM_ID}}"
+  },
+  "tags": ["slack", "messaging", "communication", "chat"],
+  "source": {
+    "package": "@modelcontextprotocol/server-slack",
+    "repository": "https://github.com/modelcontextprotocol/servers",
+    "docs": "https://api.slack.com/apps"
+  }
+}
