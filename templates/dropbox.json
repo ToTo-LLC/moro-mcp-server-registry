@@ -1,0 +1,32 @@
+{
+  "id": "dropbox",
+  "name": "Dropbox Business",
+  "description": "Access, search, upload, and manage files in Dropbox Business through AI chat.",
+  "category": "Storage",
+  "icon_url": "icons/dropbox.svg",
+  "server_type": "http",
+  "command": null,
+  "args": null,
+  "url": "https://mcp.dropbox.com/mcp",
+  "org_auth_type": "oauth2",
+  "user_auth_type": "oauth2",
+  "oauth_config": {
+    "auth_url": "https://www.dropbox.com/oauth2/authorize",
+    "token_url": "https://api.dropboxapi.com/oauth2/token",
+    "scopes": ["files.metadata.read", "files.content.read", "files.content.write", "sharing.read"],
+    "redirect_uri": null
+  },
+  "credentials_needed": ["DROPBOX_APP_KEY", "DROPBOX_APP_SECRET"],
+  "user_auth_instructions": "Each user connects their own Dropbox account through OAuth. On first use, you will be redirected to Dropbox to authorize access.",
+  "setup_notes": "Dropbox provides an official remote MCP server at mcp.dropbox.com.\n\nAdmin setup:\n1. Go to https://www.dropbox.com/developers/apps and create a new app\n2. Choose 'Scoped access' and select 'Full Dropbox' or 'App folder' access level\n3. Under the Permissions tab, enable the required scopes:\n   - files.metadata.read\n   - files.content.read\n   - files.content.write (if write access is needed)\n   - sharing.read\n4. Copy the App key and App secret from the Settings tab\n5. Enter them in the server configuration\n\nDropbox's official MCP server (mcp.dropbox.com) uses HTTP transport with Dropbox OAuth for authentication. Each user authenticates individually with their Dropbox account.\n\nAlternative: For stdio-based access, the community @microagents/mcp-server-dropbox npm package or Python dbx-mcp-server are available, but require managing refresh tokens manually.",
+  "env_mapping": {
+    "DROPBOX_APP_KEY": "{{org_credential:DROPBOX_APP_KEY}}",
+    "DROPBOX_APP_SECRET": "{{org_credential:DROPBOX_APP_SECRET}}"
+  },
+  "tags": ["dropbox", "storage", "files", "cloud-storage", "documents", "sharing"],
+  "source": {
+    "package": null,
+    "repository": null,
+    "docs": "https://www.dropbox.com/developers/documentation"
+  }
+}

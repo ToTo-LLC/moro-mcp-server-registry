@@ -1,0 +1,28 @@
+{
+  "id": "zendesk",
+  "name": "Zendesk",
+  "description": "Search, create, and manage support tickets, add comments and internal notes, and handle linked incidents through AI chat.",
+  "category": "Support",
+  "icon_url": "icons/zendesk.svg",
+  "server_type": "stdio",
+  "command": "npx",
+  "args": ["-y", "zd-mcp-server"],
+  "url": null,
+  "org_auth_type": "api_key",
+  "user_auth_type": "none",
+  "oauth_config": null,
+  "credentials_needed": ["ZENDESK_SUBDOMAIN", "ZENDESK_EMAIL", "ZENDESK_TOKEN"],
+  "user_auth_instructions": null,
+  "setup_notes": "Requires a Zendesk subdomain, agent email, and API token.\n\nAdmin setup:\n1. Log in to your Zendesk admin account\n2. Go to Admin Center > Apps and integrations > Zendesk API\n3. Enable Token Access if not already enabled\n4. Click 'Add API token', give it a description, and copy the token\n5. Note your Zendesk subdomain (the 'yourcompany' part of yourcompany.zendesk.com)\n6. Enter the subdomain, agent email address, and API token in the server configuration\n\nThe agent email must belong to an account with appropriate permissions (agent or admin role) to access tickets and other resources.\n\nNote: Zendesk also supports OAuth 2.0 for more advanced setups. This template uses API token authentication for simpler configuration.",
+  "env_mapping": {
+    "ZENDESK_SUBDOMAIN": "{{org_credential:ZENDESK_SUBDOMAIN}}",
+    "ZENDESK_EMAIL": "{{org_credential:ZENDESK_EMAIL}}",
+    "ZENDESK_TOKEN": "{{org_credential:ZENDESK_TOKEN}}"
+  },
+  "tags": ["zendesk", "support", "tickets", "helpdesk", "customer-service"],
+  "source": {
+    "package": "zd-mcp-server",
+    "repository": "https://github.com/koundinya/zd-mcp-server",
+    "docs": "https://developer.zendesk.com/api-reference/"
+  }
+}

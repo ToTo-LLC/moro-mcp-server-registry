@@ -1,0 +1,27 @@
+{
+  "id": "freshdesk",
+  "name": "Freshdesk",
+  "description": "Manage support tickets, agents, contacts, and customer interactions on Freshdesk through AI chat.",
+  "category": "Support",
+  "icon_url": "icons/freshdesk.svg",
+  "server_type": "stdio",
+  "command": "uvx",
+  "args": ["freshdesk-mcp"],
+  "url": null,
+  "org_auth_type": "api_key",
+  "user_auth_type": "none",
+  "oauth_config": null,
+  "credentials_needed": ["FRESHDESK_API_KEY", "FRESHDESK_DOMAIN"],
+  "user_auth_instructions": null,
+  "setup_notes": "Requires a Freshdesk API key and domain.\n\nAdmin setup:\n1. Log in to your Freshdesk account as an admin\n2. Click your profile picture in the top-right corner\n3. Go to Profile Settings\n4. Your API key is displayed on the right side under 'Your API Key'\n5. Note your Freshdesk domain (the 'yourcompany' part of yourcompany.freshdesk.com)\n6. Enter the API key and domain in the server configuration\n\nThe API key inherits the permissions of the account it belongs to. Use an admin account for full access to tickets, contacts, and agents.\n\nNote: This server requires Python/uvx. Ensure Python 3.10+ and uvx are available in the environment.",
+  "env_mapping": {
+    "FRESHDESK_API_KEY": "{{org_credential:FRESHDESK_API_KEY}}",
+    "FRESHDESK_DOMAIN": "{{org_credential:FRESHDESK_DOMAIN}}"
+  },
+  "tags": ["freshdesk", "support", "tickets", "helpdesk", "customer-service"],
+  "source": {
+    "package": "freshdesk-mcp",
+    "repository": "https://github.com/effytech/freshdesk_mcp",
+    "docs": "https://developers.freshdesk.com/api/"
+  }
+}

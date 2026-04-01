@@ -1,0 +1,27 @@
+{
+  "id": "box",
+  "name": "Box",
+  "description": "Search, read, and access files stored in Box cloud storage through AI chat.",
+  "category": "Storage",
+  "icon_url": "icons/box.svg",
+  "server_type": "stdio",
+  "command": "npx",
+  "args": ["-y", "box-mcp-server"],
+  "url": null,
+  "org_auth_type": "api_key",
+  "user_auth_type": "none",
+  "oauth_config": null,
+  "credentials_needed": ["BOX_JWT_BASE64", "BOX_USER_ID"],
+  "user_auth_instructions": null,
+  "setup_notes": "Requires Box JWT credentials for persistent server-to-server authentication.\n\nAdmin setup (JWT - recommended for org-level access):\n1. Go to https://app.box.com/developers/console and create a new Custom App\n2. Select 'Server Authentication (with JWT)' as the authentication method\n3. Under Configuration > Add and Manage Public Keys, click 'Generate a Public/Private Keypair'\n4. Download the JSON config file that is generated\n5. Base64-encode the JSON config: base64 -i your_config.json (macOS) or base64 your_config.json (Linux)\n6. Copy the base64 string and your Box User ID\n7. In your Box Admin Console, authorize the application\n8. Enter the base64-encoded JWT config and User ID in the server configuration\n\nAlternative: For quick testing, you can use a Developer Token instead (set BOX_DEV_TOKEN). Developer tokens expire after 60 minutes and are not suitable for production use.\n\nNote: Requires Node.js 22 or higher.",
+  "env_mapping": {
+    "BOX_JWT_BASE64": "{{org_credential:BOX_JWT_BASE64}}",
+    "BOX_USER_ID": "{{org_credential:BOX_USER_ID}}"
+  },
+  "tags": ["box", "storage", "files", "cloud-storage", "documents"],
+  "source": {
+    "package": "box-mcp-server",
+    "repository": "https://github.com/hmk/box-mcp-server",
+    "docs": "https://developer.box.com/guides/"
+  }
+}

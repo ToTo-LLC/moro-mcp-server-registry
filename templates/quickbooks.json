@@ -1,0 +1,33 @@
+{
+  "id": "quickbooks",
+  "name": "QuickBooks Online",
+  "description": "Access QuickBooks Online financial data including invoices, expenses, customers, vendors, and accounts through AI chat.",
+  "category": "Finance",
+  "icon_url": "icons/quickbooks.svg",
+  "server_type": "stdio",
+  "command": "node",
+  "args": ["dist/index.js"],
+  "url": null,
+  "org_auth_type": "oauth2",
+  "user_auth_type": "none",
+  "oauth_config": {
+    "auth_url": "https://appcenter.intuit.com/connect/oauth2",
+    "token_url": "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+    "scopes": ["com.intuit.quickbooks.accounting"],
+    "redirect_uri": "http://localhost:8000/callback"
+  },
+  "credentials_needed": ["QBO_CLIENT_ID", "QBO_CLIENT_SECRET"],
+  "user_auth_instructions": null,
+  "setup_notes": "Requires Intuit Developer OAuth 2.0 credentials.\n\nAdmin setup:\n1. Go to https://developer.intuit.com and sign in (or create a developer account)\n2. Create a new app or select an existing one from the Dashboard\n3. Under 'Keys & credentials', copy the Client ID and Client Secret\n4. Add http://localhost:8000/callback to the app's Redirect URIs\n5. Enter the Client ID and Client Secret in the server configuration\n6. On first use, the server will trigger an OAuth 2.0 flow to authorize access to a specific QuickBooks company\n\nThe server supports both sandbox and production environments. Set QBO_ENVIRONMENT to 'sandbox' for testing or 'production' for live data.\n\nNote: This is the official Intuit QuickBooks Online MCP server. It requires cloning the repository and building with npm. For a simpler npx-based alternative, consider the community 'quickbooks-mcp' package by laf-rge.",
+  "env_mapping": {
+    "QBO_CLIENT_ID": "{{org_credential:QBO_CLIENT_ID}}",
+    "QBO_CLIENT_SECRET": "{{org_credential:QBO_CLIENT_SECRET}}",
+    "QBO_ENVIRONMENT": "production"
+  },
+  "tags": ["quickbooks", "accounting", "finance", "invoices", "expenses", "intuit"],
+  "source": {
+    "package": null,
+    "repository": "https://github.com/intuit/quickbooks-online-mcp-server",
+    "docs": "https://developer.intuit.com/app/developer/qbo/docs/develop"
+  }
+}

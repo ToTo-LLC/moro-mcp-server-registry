@@ -1,0 +1,32 @@
+{
+  "id": "xero",
+  "name": "Xero",
+  "description": "Access Xero accounting data including invoices, contacts, bank transactions, and financial reports through AI chat.",
+  "category": "Finance",
+  "icon_url": "icons/xero.svg",
+  "server_type": "stdio",
+  "command": "npx",
+  "args": ["-y", "@xeroapi/xero-mcp-server@latest"],
+  "url": null,
+  "org_auth_type": "oauth2",
+  "user_auth_type": "none",
+  "oauth_config": {
+    "auth_url": "https://login.xero.com/identity/connect/authorize",
+    "token_url": "https://identity.xero.com/connect/token",
+    "scopes": ["openid", "profile", "email", "accounting.transactions", "accounting.contacts", "accounting.settings", "accounting.reports.read"],
+    "redirect_uri": null
+  },
+  "credentials_needed": ["XERO_CLIENT_ID", "XERO_CLIENT_SECRET"],
+  "user_auth_instructions": null,
+  "setup_notes": "Requires Xero OAuth 2.0 credentials. This is the official Xero MCP server.\n\nAdmin setup:\n1. Go to https://developer.xero.com/app/manage and sign in\n2. Create a new app (select 'Custom connection' type for server-to-server access)\n3. Copy the Client ID and Client Secret\n4. For custom connections, follow the guide at https://developer.xero.com/documentation/guides/oauth2/custom-connections/\n5. Enter the Client ID and Client Secret in the server configuration\n\nAuthentication modes:\n- **Custom Connection** (recommended for org-level): Uses Client ID + Client Secret for direct server-to-server access to a single Xero organization\n- **Bearer Token**: Set XERO_CLIENT_BEARER_TOKEN instead if you have a pre-obtained token\n\nThe custom connection type is ideal for this use case as it provides persistent access without user-interactive OAuth flows.",
+  "env_mapping": {
+    "XERO_CLIENT_ID": "{{org_credential:XERO_CLIENT_ID}}",
+    "XERO_CLIENT_SECRET": "{{org_credential:XERO_CLIENT_SECRET}}"
+  },
+  "tags": ["xero", "accounting", "finance", "invoices", "bank", "reports"],
+  "source": {
+    "package": "@xeroapi/xero-mcp-server",
+    "repository": "https://github.com/XeroAPI/xero-mcp-server",
+    "docs": "https://developer.xero.com/documentation/"
+  }
+}
