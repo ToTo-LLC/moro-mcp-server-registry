@@ -161,7 +161,7 @@
       "category": "Knowledge Base",
       "url_pattern": "*.atlassian.net",
       "template_path": "templates/confluence.json",
-      "template_type": "full"
+      "template_type": "stub"
     },
     {
       "id": "mailchimp",
@@ -219,7 +219,7 @@
     },
     {
       "id": "jira",
-      "name": "Jira",
+      "name": "Jira & Confluence",
       "icon_url": "icons/jira.svg",
       "category": "Project Management",
       "url_pattern": "*.atlassian.net",

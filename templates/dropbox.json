@@ -18,7 +18,7 @@
   },
   "credentials_needed": ["DROPBOX_APP_KEY", "DROPBOX_APP_SECRET"],
   "user_auth_instructions": "Each user connects their own Dropbox account through OAuth. On first use, you will be redirected to Dropbox to authorize access.",
-  "setup_notes": "Dropbox provides an official remote MCP server at mcp.dropbox.com.\n\nAdmin setup:\n1. Go to https://www.dropbox.com/developers/apps and create a new app\n2. Choose 'Scoped access' and select 'Full Dropbox' or 'App folder' access level\n3. Under the Permissions tab, enable the required scopes:\n   - files.metadata.read\n   - files.content.read\n   - files.content.write (if write access is needed)\n   - sharing.read\n4. Copy the App key and App secret from the Settings tab\n5. Enter them in the server configuration\n\nDropbox's official MCP server (mcp.dropbox.com) uses HTTP transport with Dropbox OAuth for authentication. Each user authenticates individually with their Dropbox account.\n\nAlternative: For stdio-based access, the community @microagents/mcp-server-dropbox npm package or Python dbx-mcp-server are available, but require managing refresh tokens manually.",
+  "setup_notes": "Uses Dropbox's official remote MCP server.\n\nDropbox offers two MCP endpoints:\n- Files: https://mcp.dropbox.com/mcp (browse and query files)\n- Dash: https://mcp.dropbox.com/dash (search across connected apps)\n\nSetup:\n1. Configure your MCP client to connect to the desired endpoint\n2. When prompted, sign in with your Dropbox account\n3. Authorize access to your Dropbox data\n\nAuthentication uses Dropbox OAuth.",
   "env_mapping": {
     "DROPBOX_APP_KEY": "{{org_credential:DROPBOX_APP_KEY}}",
     "DROPBOX_APP_SECRET": "{{org_credential:DROPBOX_APP_SECRET}}"

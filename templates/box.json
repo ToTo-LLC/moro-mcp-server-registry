@@ -4,24 +4,19 @@
   "description": "Search, read, and access files stored in Box cloud storage through AI chat.",
   "category": "Storage",
   "icon_url": "icons/box.svg",
-  "server_type": "stdio",
-  "command": "npx",
-  "args": ["-y", "box-mcp-server"],
+  "server_type": "http",
+  "command": null,
+  "args": null,
   "url": null,
-  "org_auth_type": "api_key",
-  "user_auth_type": "none",
+  "org_auth_type": "oauth2",
+  "user_auth_type": "oauth2",
   "oauth_config": null,
-  "credentials_needed": ["BOX_JWT_BASE64", "BOX_USER_ID"],
-  "user_auth_instructions": null,
-  "setup_notes": "Requires Box JWT credentials for persistent server-to-server authentication.\n\nAdmin setup (JWT - recommended for org-level access):\n1. Go to https://app.box.com/developers/console and create a new Custom App\n2. Select 'Server Authentication (with JWT)' as the authentication method\n3. Under Configuration > Add and Manage Public Keys, click 'Generate a Public/Private Keypair'\n4. Download the JSON config file that is generated\n5. Base64-encode the JSON config: base64 -i your_config.json (macOS) or base64 your_config.json (Linux)\n6. Copy the base64 string and your Box User ID\n7. In your Box Admin Console, authorize the application\n8. Enter the base64-encoded JWT config and User ID in the server configuration\n\nAlternative: For quick testing, you can use a Developer Token instead (set BOX_DEV_TOKEN). Developer tokens expire after 60 minutes and are not suitable for production use.\n\nNote: Requires Node.js 22 or higher.",
-  "env_mapping": {
-    "BOX_JWT_BASE64": "{{org_credential:BOX_JWT_BASE64}}",
-    "BOX_USER_ID": "{{org_credential:BOX_USER_ID}}"
-  },
+  "credentials_needed": ["client_id", "client_secret"],
+  "user_auth_instructions": "Click 'Connect' to link your Box account and authorize access.",
+  "setup_notes": "Uses Box's official MCP server.\n\nBox offers two MCP server options:\n\n1. Remote (Hosted by Box) — Recommended:\n   Enable in the Box Admin Console.\n   No local installation required.\n   See https://support.box.com/hc/en-us/articles/43847256139923\n\n2. Self-hosted (Open Source):\n   Clone from https://github.com/box-community/mcp-server-box\n   Requires local setup with JWT or Developer Token.\n\nThe remote server supports Anthropic Claude, Microsoft Copilot Studio,\nand other MCP-compatible clients.",
   "tags": ["box", "storage", "files", "cloud-storage", "documents"],
   "source": {
-    "package": "box-mcp-server",
-    "repository": "https://github.com/hmk/box-mcp-server",
-    "docs": "https://developer.box.com/guides/"
+    "docs": "https://developer.box.com/guides/box-mcp",
+    "repository": "https://github.com/box-community/mcp-server-box"
   }
 }

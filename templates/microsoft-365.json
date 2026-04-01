@@ -18,7 +18,7 @@
   },
   "credentials_needed": ["MS365_MCP_CLIENT_ID", "MS365_MCP_CLIENT_SECRET", "MS365_MCP_TENANT_ID"],
   "user_auth_instructions": "1. Click 'Connect' to link your Microsoft 365 account.\n2. Sign in with your work or school Microsoft account.\n3. Review and approve the requested permissions.\n4. You'll be redirected back automatically.\n\nNote: Your organization admin must first register an Azure AD application.",
-  "setup_notes": "Requires an Azure AD (Entra ID) app registration with delegated Microsoft Graph permissions.\n\nAdmin setup:\n1. Go to https://portal.azure.com → Azure Active Directory → App registrations → New registration\n2. Set redirect URI: {your_app_url}/api/v1/mcp-servers/{server_id}/oauth/callback\n3. Under 'Certificates & secrets', create a new client secret\n4. Under 'API permissions', add Microsoft Graph delegated permissions:\n   - User.Read, Mail.ReadWrite, Calendars.ReadWrite\n   - Files.ReadWrite.All, Contacts.ReadWrite\n   - Tasks.ReadWrite, Notes.ReadWrite.All\n5. Grant admin consent for the permissions\n6. Enter the Application (client) ID, Client Secret, and Tenant ID in the server configuration\n\nSet MS365_MCP_TENANT_ID to your Azure AD tenant ID, or 'common' for multi-tenant apps.",
+  "setup_notes": "Requires an Azure AD (Entra ID) app registration with delegated Microsoft Graph permissions.\n\nAdmin setup:\n1. Go to https://portal.azure.com → Azure Active Directory → App registrations → New registration\n2. Set redirect URI: {your_app_url}/api/v1/mcp-servers/{server_id}/oauth/callback\n3. Under 'Certificates & secrets', create a new client secret\n4. Under 'API permissions', add Microsoft Graph delegated permissions:\n   - User.Read, Mail.ReadWrite, Calendars.ReadWrite\n   - Files.ReadWrite.All, Contacts.ReadWrite\n   - Tasks.ReadWrite, Notes.ReadWrite.All\n5. Grant admin consent for the permissions\n6. Enter the Application (client) ID, Client Secret, and Tenant ID in the server configuration\n\nSet MS365_MCP_TENANT_ID to your Azure AD tenant ID, or 'common' for multi-tenant apps.\n\nNote: Microsoft also offers official Work IQ MCP servers\n(Mail, Calendar, OneDrive, Teams, SharePoint, Word)\nbut these require a Microsoft 365 Copilot license.\nSee https://learn.microsoft.com/en-us/microsoft-agent-365/tooling-servers-overview",
   "env_mapping": {
     "MS365_MCP_CLIENT_ID": "{{org_credential:MS365_MCP_CLIENT_ID}}",
     "MS365_MCP_CLIENT_SECRET": "{{org_credential:MS365_MCP_CLIENT_SECRET}}",
@@ -29,6 +29,7 @@
   "source": {
     "package": "@softeria/ms-365-mcp-server",
     "repository": "https://github.com/Softeria/ms-365-mcp-server",
-    "docs": "https://learn.microsoft.com/en-us/graph/auth-v2-user"
+    "docs": "https://learn.microsoft.com/en-us/graph/auth-v2-user",
+    "official_docs": "https://learn.microsoft.com/en-us/microsoft-agent-365/tooling-servers-overview"
   }
 }

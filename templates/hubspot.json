@@ -4,23 +4,23 @@
   "description": "Manage HubSpot CRM contacts, companies, deals, and tickets. Search and update records, track sales pipelines, and automate CRM workflows through AI chat.",
   "category": "CRM",
   "icon_url": "icons/hubspot.svg",
-  "server_type": "stdio",
-  "command": "npx",
-  "args": ["-y", "@hubspot/mcp-server"],
-  "url": null,
-  "org_auth_type": "api_key",
-  "user_auth_type": "none",
-  "oauth_config": null,
-  "credentials_needed": ["PRIVATE_APP_ACCESS_TOKEN"],
-  "user_auth_instructions": null,
-  "setup_notes": "Requires a HubSpot Private App access token.\n\nAdmin setup:\n1. Go to your HubSpot account Settings > Integrations > Private Apps\n2. Click 'Create a private app'\n3. Name your app and configure the required scopes:\n   - crm.objects.contacts.read / write\n   - crm.objects.companies.read / write\n   - crm.objects.deals.read / write\n   - crm.objects.tickets.read / write\n   - crm.schemas.contacts.read\n   - crm.schemas.companies.read\n   - crm.schemas.deals.read\n4. Click 'Create app' and copy the access token immediately (it won't be shown again)\n5. Enter the access token in the server configuration\n\nHubSpot also supports OAuth 2.0 for public apps (authorization URL: https://app.hubspot.com/oauth/authorize, token URL: https://api.hubapi.com/oauth/v1/token). This template uses Private App tokens for simpler setup.\n\nNote: This is the official @hubspot/mcp-server package from HubSpot, currently in public beta.",
-  "env_mapping": {
-    "PRIVATE_APP_ACCESS_TOKEN": "{{org_credential:PRIVATE_APP_ACCESS_TOKEN}}"
+  "server_type": "http",
+  "command": null,
+  "args": null,
+  "url": "https://mcp.hubspot.com",
+  "org_auth_type": "oauth2",
+  "user_auth_type": "oauth2",
+  "oauth_config": {
+    "authorization_url": "https://app.hubspot.com/oauth/authorize",
+    "token_url": "https://api.hubapi.com/oauth/v1/token",
+    "scopes": "crm.objects.contacts.read crm.objects.companies.read crm.objects.deals.read",
+    "scope_param_name": "scope"
   },
+  "credentials_needed": ["client_id", "client_secret"],
+  "user_auth_instructions": "Click 'Connect' to link your HubSpot account.\nYou'll be prompted to select your HubSpot account and grant permissions.",
+  "setup_notes": "Uses HubSpot's official remote MCP server.\n\nAdmin setup:\n1. Go to your HubSpot account > Development > MCP Auth Apps\n2. Create a new MCP Auth App\n3. Set the app name, redirect URL, and optional icon\n4. Copy the Client ID and Client Secret\n5. The server uses OAuth 2.1 with PKCE for authentication\n\nCurrently supports read-only access to: contacts, companies,\ndeals, tickets, products, orders, line items, invoices, quotes.",
   "tags": ["hubspot", "crm", "sales", "contacts", "deals", "marketing", "pipeline"],
   "source": {
-    "package": "@hubspot/mcp-server",
-    "repository": "https://github.com/HubSpot/hubspot-mcp-server",
     "docs": "https://developers.hubspot.com/mcp"
   }
 }

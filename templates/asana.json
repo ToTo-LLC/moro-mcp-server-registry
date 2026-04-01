@@ -4,23 +4,18 @@
   "description": "Manage tasks, projects, and workspaces in Asana. Create and update tasks, search across projects, and track team work through AI chat.",
   "category": "Project Management",
   "icon_url": "icons/asana.svg",
-  "server_type": "stdio",
-  "command": "npx",
-  "args": ["-y", "@roychri/mcp-server-asana"],
-  "url": null,
-  "org_auth_type": "api_key",
-  "user_auth_type": "none",
+  "server_type": "http",
+  "command": null,
+  "args": null,
+  "url": "https://mcp.asana.com/v2/mcp",
+  "org_auth_type": "none",
+  "user_auth_type": "oauth2",
   "oauth_config": null,
-  "credentials_needed": ["ASANA_ACCESS_TOKEN"],
-  "user_auth_instructions": null,
-  "setup_notes": "Requires an Asana Personal Access Token.\n\nAdmin setup:\n1. Go to https://app.asana.com/0/my-apps and click 'Create new token'\n2. Give it a descriptive name (e.g., 'MCP Server')\n3. Copy the generated token immediately\n4. Enter the token in the server configuration\n\nNote: Personal Access Tokens provide full access to the Asana account that created them. For production use, consider using a service account with limited workspace access.\n\nAsana also offers an official V2 MCP server at https://mcp.asana.com/v2/mcp with OAuth 2.0 authentication, but it requires OAuth client registration and dynamic token management. This template uses the community @roychri/mcp-server-asana package for simpler token-based setup.\n\nOptional: Set READ_ONLY_MODE=true in environment variables to disable all write operations.",
-  "env_mapping": {
-    "ASANA_ACCESS_TOKEN": "{{org_credential:ASANA_ACCESS_TOKEN}}"
-  },
+  "credentials_needed": null,
+  "user_auth_instructions": "Click 'Connect' to sign in with your Asana account and authorize access.",
+  "setup_notes": "Uses Asana's official MCP V2 server (Streamable HTTP).\n\nSetup:\n1. Configure your MCP client to connect to:\n   https://mcp.asana.com/v2/mcp\n2. When prompted, sign in with your Asana account\n3. Authorize access to your Asana workspace\n\nNote: The V1/beta endpoint (mcp.asana.com/sse) is deprecated\nand will shut down on May 11, 2026.",
   "tags": ["asana", "project-management", "tasks", "projects", "workspaces", "teams"],
   "source": {
-    "package": "@roychri/mcp-server-asana",
-    "repository": "https://github.com/roychri/mcp-server-asana",
-    "docs": "https://developers.asana.com/docs/personal-access-token"
+    "docs": "https://developers.asana.com/docs/using-asanas-mcp-server"
   }
 }
