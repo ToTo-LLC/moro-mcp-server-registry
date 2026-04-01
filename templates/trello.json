@@ -1,0 +1,20 @@
+{
+  "id": "trello",
+  "name": "Trello",
+  "description": "Manage Trello boards, lists, and cards. Create tasks, move cards between lists, add labels and due dates, and track project progress through AI chat.",
+  "category": "Project Management",
+  "icon_url": "icons/trello.svg",
+  "server_type": null,
+  "url": null,
+  "command": null,
+  "args": null,
+  "org_auth_type": null,
+  "user_auth_type": null,
+  "oauth_config": null,
+  "credentials_needed": null,
+  "setup_notes": "Use Smart Discovery to auto-detect connection settings.",
+  "tags": ["trello", "project-management", "kanban", "boards", "cards", "tasks"],
+  "source": {
+    "docs": "https://developer.atlassian.com/cloud/trello/"
+  }
+}

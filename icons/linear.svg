@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="10" fill="#5E6AD2"/>
+  <!-- Linear logo: circle with diagonal lines -->
+  <circle cx="24" cy="24" r="13" fill="white" fill-opacity="0.15"/>
+  <path d="M13 35 L35 13" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M13 27 L27 13" stroke="white" stroke-width="3" stroke-linecap="round" stroke-opacity="0.7"/>
+  <path d="M21 35 L35 21" stroke="white" stroke-width="3" stroke-linecap="round" stroke-opacity="0.7"/>
+</svg>

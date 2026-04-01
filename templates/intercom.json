@@ -1,0 +1,20 @@
+{
+  "id": "intercom",
+  "name": "Intercom",
+  "description": "Manage Intercom conversations, contacts, and support tickets. Search customers, reply to conversations, and track support metrics through AI chat.",
+  "category": "Support",
+  "icon_url": "icons/intercom.svg",
+  "server_type": null,
+  "url": null,
+  "command": null,
+  "args": null,
+  "org_auth_type": null,
+  "user_auth_type": null,
+  "oauth_config": null,
+  "credentials_needed": null,
+  "setup_notes": "Use Smart Discovery to auto-detect connection settings.",
+  "tags": ["intercom", "support", "customer-success", "chat", "conversations", "crm"],
+  "source": {
+    "docs": "https://developers.intercom.com/"
+  }
+}

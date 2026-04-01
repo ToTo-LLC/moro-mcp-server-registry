@@ -1,0 +1,20 @@
+{
+  "id": "docusign",
+  "name": "DocuSign",
+  "description": "Send, track, and manage DocuSign envelopes and electronic signatures. Create signature requests, check envelope status, and retrieve signed documents through AI chat.",
+  "category": "Document Management",
+  "icon_url": "icons/docusign.svg",
+  "server_type": null,
+  "url": null,
+  "command": null,
+  "args": null,
+  "org_auth_type": null,
+  "user_auth_type": null,
+  "oauth_config": null,
+  "credentials_needed": null,
+  "setup_notes": "Use Smart Discovery to auto-detect connection settings.",
+  "tags": ["docusign", "esignature", "documents", "contracts", "signatures"],
+  "source": {
+    "docs": "https://developers.docusign.com/"
+  }
+}

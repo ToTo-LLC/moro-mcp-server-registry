@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="10" fill="#286EFA"/>
+  <!-- Intercom chat bubble with lines -->
+  <rect x="9" y="9" width="30" height="24" rx="5" fill="white" fill-opacity="0.9"/>
+  <rect x="13" y="14" width="8" height="3" rx="1.5" fill="#286EFA"/>
+  <rect x="13" y="20" width="14" height="3" rx="1.5" fill="#286EFA"/>
+  <rect x="13" y="26" width="10" height="3" rx="1.5" fill="#286EFA"/>
+  <!-- Tail -->
+  <path d="M13 33 L9 39 L20 35" fill="white" fill-opacity="0.9"/>
+</svg>

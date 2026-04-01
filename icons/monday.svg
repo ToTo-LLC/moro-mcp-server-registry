@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="10" fill="#FF3D57"/>
+  <g transform="translate(8, 18)">
+    <!-- Monday.com three-dot row logo -->
+    <circle cx="6" cy="6" r="6" fill="#FDAB3D"/>
+    <circle cx="16" cy="6" r="6" fill="#00CA72"/>
+    <circle cx="26" cy="6" r="6" fill="#A358DF"/>
+  </g>
+</svg>
