@@ -1,4 +1,302 @@
 {
   "version": "1.0",
-  "servers": []
+  "servers": [
+    {
+      "id": "hubspot",
+      "name": "HubSpot",
+      "icon_url": "icons/hubspot.svg",
+      "category": "CRM",
+      "url_pattern": "*.hubspot.com",
+      "template_path": "templates/hubspot.json",
+      "template_type": "full"
+    },
+    {
+      "id": "salesforce",
+      "name": "Salesforce",
+      "icon_url": "icons/salesforce.svg",
+      "category": "CRM",
+      "url_pattern": "*.salesforce.com",
+      "template_path": "templates/salesforce.json",
+      "template_type": "full"
+    },
+    {
+      "id": "zoho",
+      "name": "Zoho CRM",
+      "icon_url": "icons/zoho.svg",
+      "category": "CRM",
+      "url_pattern": "*.zoho.com",
+      "template_path": "templates/zoho.json",
+      "template_type": "full"
+    },
+    {
+      "id": "microsoft-teams",
+      "name": "Microsoft Teams",
+      "icon_url": "icons/microsoft-teams.svg",
+      "category": "Communication",
+      "url_pattern": "*.teams.microsoft.com",
+      "template_path": "templates/microsoft-teams.json",
+      "template_type": "full"
+    },
+    {
+      "id": "slack",
+      "name": "Slack",
+      "icon_url": "icons/slack.svg",
+      "category": "Communication",
+      "url_pattern": "*.slack.com",
+      "template_path": "templates/slack.json",
+      "template_type": "full"
+    },
+    {
+      "id": "twilio",
+      "name": "Twilio",
+      "icon_url": "icons/twilio.svg",
+      "category": "Communication",
+      "url_pattern": "*.twilio.com",
+      "template_path": "templates/twilio.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "airtable",
+      "name": "Airtable",
+      "icon_url": "icons/airtable.svg",
+      "category": "Database",
+      "url_pattern": "*.airtable.com",
+      "template_path": "templates/airtable.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "adobe-sign",
+      "name": "Adobe Sign",
+      "icon_url": "icons/adobe-sign.svg",
+      "category": "Document Management",
+      "url_pattern": "*.adobesign.com",
+      "template_path": "templates/adobe-sign.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "docusign",
+      "name": "DocuSign",
+      "icon_url": "icons/docusign.svg",
+      "category": "Document Management",
+      "url_pattern": "*.docusign.com",
+      "template_path": "templates/docusign.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "netsuite",
+      "name": "NetSuite",
+      "icon_url": "icons/netsuite.svg",
+      "category": "ERP",
+      "url_pattern": "*.netsuite.com",
+      "template_path": "templates/netsuite.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "sap",
+      "name": "SAP",
+      "icon_url": "icons/sap.svg",
+      "category": "ERP",
+      "url_pattern": "*.sap.com",
+      "template_path": "templates/sap.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "paypal",
+      "name": "PayPal",
+      "icon_url": "icons/paypal.svg",
+      "category": "Finance",
+      "url_pattern": "*.paypal.com",
+      "template_path": "templates/paypal.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "quickbooks",
+      "name": "QuickBooks Online",
+      "icon_url": "icons/quickbooks.svg",
+      "category": "Finance",
+      "url_pattern": "*.intuit.com",
+      "template_path": "templates/quickbooks.json",
+      "template_type": "full"
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe",
+      "icon_url": "icons/stripe.svg",
+      "category": "Finance",
+      "url_pattern": "*.stripe.com",
+      "template_path": "templates/stripe.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "xero",
+      "name": "Xero",
+      "icon_url": "icons/xero.svg",
+      "category": "Finance",
+      "url_pattern": "*.xero.com",
+      "template_path": "templates/xero.json",
+      "template_type": "full"
+    },
+    {
+      "id": "bamboohr",
+      "name": "BambooHR",
+      "icon_url": "icons/bamboohr.svg",
+      "category": "HR",
+      "url_pattern": "*.bamboohr.com",
+      "template_path": "templates/bamboohr.json",
+      "template_type": "full"
+    },
+    {
+      "id": "servicenow",
+      "name": "ServiceNow",
+      "icon_url": "icons/servicenow.svg",
+      "category": "IT Service Management",
+      "url_pattern": "*.service-now.com",
+      "template_path": "templates/servicenow.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "confluence",
+      "name": "Confluence",
+      "icon_url": "icons/confluence.svg",
+      "category": "Knowledge Base",
+      "url_pattern": "*.atlassian.net",
+      "template_path": "templates/confluence.json",
+      "template_type": "full"
+    },
+    {
+      "id": "mailchimp",
+      "name": "Mailchimp",
+      "icon_url": "icons/mailchimp.svg",
+      "category": "Marketing",
+      "url_pattern": "*.mailchimp.com",
+      "template_path": "templates/mailchimp.json",
+      "template_type": "full"
+    },
+    {
+      "id": "pagerduty",
+      "name": "PagerDuty",
+      "icon_url": "icons/pagerduty.svg",
+      "category": "Operations",
+      "url_pattern": "*.pagerduty.com",
+      "template_path": "templates/pagerduty.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "google-workspace",
+      "name": "Google Workspace",
+      "icon_url": "icons/google-workspace.svg",
+      "category": "Productivity",
+      "url_pattern": "*.google.com",
+      "template_path": "templates/google-workspace.json",
+      "template_type": "full"
+    },
+    {
+      "id": "microsoft-365",
+      "name": "Microsoft 365",
+      "icon_url": "icons/microsoft-365.svg",
+      "category": "Productivity",
+      "url_pattern": "*.office.com",
+      "template_path": "templates/microsoft-365.json",
+      "template_type": "full"
+    },
+    {
+      "id": "notion",
+      "name": "Notion",
+      "icon_url": "icons/notion.svg",
+      "category": "Productivity",
+      "url_pattern": "*.notion.so",
+      "template_path": "templates/notion.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "asana",
+      "name": "Asana",
+      "icon_url": "icons/asana.svg",
+      "category": "Project Management",
+      "url_pattern": "*.asana.com",
+      "template_path": "templates/asana.json",
+      "template_type": "full"
+    },
+    {
+      "id": "jira",
+      "name": "Jira",
+      "icon_url": "icons/jira.svg",
+      "category": "Project Management",
+      "url_pattern": "*.atlassian.net",
+      "template_path": "templates/jira.json",
+      "template_type": "full"
+    },
+    {
+      "id": "linear",
+      "name": "Linear",
+      "icon_url": "icons/linear.svg",
+      "category": "Project Management",
+      "url_pattern": "*.linear.app",
+      "template_path": "templates/linear.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "monday",
+      "name": "Monday.com",
+      "icon_url": "icons/monday.svg",
+      "category": "Project Management",
+      "url_pattern": "*.monday.com",
+      "template_path": "templates/monday.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "trello",
+      "name": "Trello",
+      "icon_url": "icons/trello.svg",
+      "category": "Project Management",
+      "url_pattern": "*.trello.com",
+      "template_path": "templates/trello.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "box",
+      "name": "Box",
+      "icon_url": "icons/box.svg",
+      "category": "Storage",
+      "url_pattern": "*.box.com",
+      "template_path": "templates/box.json",
+      "template_type": "full"
+    },
+    {
+      "id": "dropbox",
+      "name": "Dropbox Business",
+      "icon_url": "icons/dropbox.svg",
+      "category": "Storage",
+      "url_pattern": "*.dropbox.com",
+      "template_path": "templates/dropbox.json",
+      "template_type": "full"
+    },
+    {
+      "id": "freshdesk",
+      "name": "Freshdesk",
+      "icon_url": "icons/freshdesk.svg",
+      "category": "Support",
+      "url_pattern": "*.freshdesk.com",
+      "template_path": "templates/freshdesk.json",
+      "template_type": "full"
+    },
+    {
+      "id": "intercom",
+      "name": "Intercom",
+      "icon_url": "icons/intercom.svg",
+      "category": "Support",
+      "url_pattern": "*.intercom.com",
+      "template_path": "templates/intercom.json",
+      "template_type": "stub"
+    },
+    {
+      "id": "zendesk",
+      "name": "Zendesk",
+      "icon_url": "icons/zendesk.svg",
+      "category": "Support",
+      "url_pattern": "*.zendesk.com",
+      "template_path": "templates/zendesk.json",
+      "template_type": "full"
+    }
+  ]
 }
