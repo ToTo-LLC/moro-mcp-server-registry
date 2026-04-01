@@ -1,0 +1,28 @@
+{
+  "id": "jira",
+  "name": "Jira",
+  "description": "Search issues with JQL, view and update tickets, manage projects, track sprints, and access development info (commits, PRs) in Jira Cloud through AI chat.",
+  "category": "Project Management",
+  "icon_url": "icons/jira.svg",
+  "server_type": "stdio",
+  "command": "npx",
+  "args": ["-y", "@aashari/mcp-server-atlassian-jira"],
+  "url": null,
+  "org_auth_type": "api_key",
+  "user_auth_type": "none",
+  "oauth_config": null,
+  "credentials_needed": ["ATLASSIAN_SITE_NAME", "ATLASSIAN_USER_EMAIL", "ATLASSIAN_API_TOKEN"],
+  "user_auth_instructions": null,
+  "setup_notes": "Requires an Atlassian Cloud site name, user email, and API token.\n\nAdmin setup:\n1. Go to https://id.atlassian.com/manage-profile/security/api-tokens\n2. Click 'Create API token' and give it a descriptive label (e.g., 'MCP Server')\n3. Copy the generated token immediately (it won't be shown again)\n4. Determine your site name: it's the subdomain of your Jira URL (e.g., for https://mycompany.atlassian.net, the site name is 'mycompany')\n5. Enter the site name, the email address associated with the Atlassian account, and the API token in the server configuration\n\nNote: This server only supports Jira Cloud (not Jira Server/Data Center). Atlassian also offers an official remote MCP server at https://mcp.atlassian.com with OAuth 2.1 authentication, but it requires dynamic client registration support. This template uses the community @aashari/mcp-server-atlassian-jira package for simpler API token-based setup.",
+  "env_mapping": {
+    "ATLASSIAN_SITE_NAME": "{{org_credential:ATLASSIAN_SITE_NAME}}",
+    "ATLASSIAN_USER_EMAIL": "{{org_credential:ATLASSIAN_USER_EMAIL}}",
+    "ATLASSIAN_API_TOKEN": "{{org_credential:ATLASSIAN_API_TOKEN}}"
+  },
+  "tags": ["jira", "atlassian", "project-management", "issues", "tickets", "agile", "sprints"],
+  "source": {
+    "package": "@aashari/mcp-server-atlassian-jira",
+    "repository": "https://github.com/aashari/mcp-server-atlassian-jira",
+    "docs": "https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/"
+  }
+}
