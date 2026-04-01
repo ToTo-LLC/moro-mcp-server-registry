@@ -21,9 +21,9 @@
     },
     {
       "id": "zoho",
-      "name": "Zoho CRM",
+      "name": "Zoho",
       "icon_url": "icons/zoho.svg",
-      "category": "CRM",
+      "category": "ERP/Suite",
       "url_pattern": "*.zoho.com",
       "template_path": "templates/zoho.json",
       "template_type": "full"
