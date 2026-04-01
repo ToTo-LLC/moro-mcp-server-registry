@@ -1,26 +1,20 @@
 {
   "id": "mailchimp",
   "name": "Mailchimp",
-  "description": "Access Mailchimp marketing data including campaigns, audiences, subscribers, templates, and reports through AI chat.",
+  "description": "Manage email campaigns, audiences, and marketing analytics in Mailchimp.",
   "category": "Marketing",
   "icon_url": "icons/mailchimp.svg",
-  "server_type": "stdio",
-  "command": "npx",
-  "args": ["-y", "@agentx-ai/mailchimp-mcp-server"],
+  "server_type": null,
   "url": null,
-  "org_auth_type": "api_key",
-  "user_auth_type": "none",
+  "command": null,
+  "args": null,
+  "org_auth_type": null,
+  "user_auth_type": null,
   "oauth_config": null,
-  "credentials_needed": ["MAILCHIMP_API_KEY"],
-  "user_auth_instructions": null,
-  "setup_notes": "Requires a Mailchimp API key.\n\nAdmin setup:\n1. Log in to your Mailchimp account\n2. Click your profile icon in the bottom-left corner\n3. Go to Account & billing > Extras > API keys\n4. Click 'Create A Key' and copy the generated key\n5. The API key includes a data center suffix (e.g., xxxxxxxxxxxxxxxx-us1)\n6. Enter the full API key (including the -usXX suffix) in the server configuration\n\nThe API key provides access to all data the account owner can access. For limited access, create a key from a user account with restricted permissions.\n\nMailchimp also supports OAuth 2.0 (auth URL: https://login.mailchimp.com/oauth2/authorize, token URL: https://login.mailchimp.com/oauth2/token) for public app integrations. This template uses API key authentication for simpler setup.\n\nNote: This server provides read-only access to Mailchimp Marketing API data. For write operations, consider using a more comprehensive MCP server implementation.\n\nNote: Intuit (Mailchimp's parent company) is partnering with Anthropic\nto bring official MCP integrations for Mailchimp.\nA transactional messaging MCP is available at https://mandrillapp.com/mcp\nFull integration expected spring 2026.",
-  "env_mapping": {
-    "MAILCHIMP_API_KEY": "{{org_credential:MAILCHIMP_API_KEY}}"
-  },
-  "tags": ["mailchimp", "email", "marketing", "campaigns", "audiences", "newsletters"],
+  "credentials_needed": null,
+  "setup_notes": "Intuit (Mailchimp's parent company) is partnering with Anthropic\nto bring official MCP integrations for Mailchimp.\nExpected availability: Spring 2026.\n\nA transactional messaging MCP endpoint is available at:\nhttps://mandrillapp.com/mcp\n\nUse Smart Discovery to find current options.",
+  "tags": ["mailchimp", "intuit", "email", "marketing", "campaigns"],
   "source": {
-    "package": "@agentx-ai/mailchimp-mcp-server",
-    "repository": "https://github.com/AgentX-ai/mailchimp-mcp",
-    "docs": "https://mailchimp.com/developer/marketing/api/"
+    "docs": "https://mailchimp.com/developer/"
   }
 }

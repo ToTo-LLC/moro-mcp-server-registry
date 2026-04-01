@@ -143,7 +143,7 @@
       "category": "HR",
       "url_pattern": "*.bamboohr.com",
       "template_path": "templates/bamboohr.json",
-      "template_type": "full"
+      "template_type": "stub"
     },
     {
       "id": "servicenow",
@@ -170,7 +170,7 @@
       "category": "Marketing",
       "url_pattern": "*.mailchimp.com",
       "template_path": "templates/mailchimp.json",
-      "template_type": "full"
+      "template_type": "stub"
     },
     {
       "id": "pagerduty",
@@ -278,7 +278,7 @@
       "category": "Support",
       "url_pattern": "*.freshdesk.com",
       "template_path": "templates/freshdesk.json",
-      "template_type": "full"
+      "template_type": "stub"
     },
     {
       "id": "intercom",
@@ -296,7 +296,7 @@
       "category": "Support",
       "url_pattern": "*.zendesk.com",
       "template_path": "templates/zendesk.json",
-      "template_type": "full"
+      "template_type": "stub"
     }
   ]
 }
