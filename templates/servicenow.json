@@ -3,7 +3,7 @@
   "name": "ServiceNow",
   "description": "Interact with ServiceNow incidents, requests, and CMDB. Create and update tickets, query configuration items, and manage IT service workflows through AI chat.",
   "category": "IT Service Management",
-  "icon_url": "icons/servicenow.svg",
+  "icon_url": "icons/servicenow.png",
   "server_type": null,
   "url": null,
   "command": null,

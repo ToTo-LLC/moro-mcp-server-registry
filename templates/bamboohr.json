@@ -3,7 +3,7 @@
   "name": "BambooHR",
   "description": "Access employee records, time-off requests, and company directory in BambooHR.",
   "category": "HR",
-  "icon_url": "icons/bamboohr.svg",
+  "icon_url": "icons/bamboohr.png",
   "server_type": null,
   "url": null,
   "command": null,

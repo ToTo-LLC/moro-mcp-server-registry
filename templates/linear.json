@@ -3,7 +3,7 @@
   "name": "Linear",
   "description": "Manage Linear issues, projects, and cycles. Create and update issues, search across teams, track engineering work, and manage sprints through AI chat.",
   "category": "Project Management",
-  "icon_url": "icons/linear.svg",
+  "icon_url": "icons/linear.png",
   "server_type": null,
   "url": null,
   "command": null,

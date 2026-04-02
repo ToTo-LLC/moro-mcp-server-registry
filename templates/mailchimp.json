@@ -3,7 +3,7 @@
   "name": "Mailchimp",
   "description": "Manage email campaigns, audiences, and marketing analytics in Mailchimp.",
   "category": "Marketing",
-  "icon_url": "icons/mailchimp.svg",
+  "icon_url": "icons/mailchimp.png",
   "server_type": null,
   "url": null,
   "command": null,

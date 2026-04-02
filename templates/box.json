@@ -3,7 +3,7 @@
   "name": "Box",
   "description": "Search, read, and access files stored in Box cloud storage through AI chat.",
   "category": "Storage",
-  "icon_url": "icons/box.svg",
+  "icon_url": "icons/box.png",
   "server_type": "http",
   "command": null,
   "args": null,

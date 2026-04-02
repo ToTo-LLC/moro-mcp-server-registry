@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-  <rect width="48" height="48" rx="10" fill="#18BFFF"/>
-  <!-- Airtable block logo -->
-  <rect x="10" y="10" width="12" height="12" rx="2" fill="white" fill-opacity="0.9"/>
-  <rect x="26" y="10" width="12" height="12" rx="2" fill="white" fill-opacity="0.6"/>
-  <rect x="10" y="26" width="12" height="12" rx="2" fill="white" fill-opacity="0.6"/>
-  <rect x="26" y="26" width="12" height="12" rx="2" fill="white" fill-opacity="0.3"/>
-</svg>

@@ -3,7 +3,7 @@
   "name": "Zoho",
   "description": "Access CRM, Mail, Calendar, Desk, Books, Projects, WorkDrive, and 30+ Zoho apps through AI chat. Powered by Zoho's official MCP platform.",
   "category": "ERP/Suite",
-  "icon_url": "icons/zoho.svg",
+  "icon_url": "icons/zoho.png",
   "server_type": "http",
   "command": null,
   "args": null,

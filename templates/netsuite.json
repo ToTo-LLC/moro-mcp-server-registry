@@ -3,7 +3,7 @@
   "name": "NetSuite",
   "description": "Access NetSuite ERP records, transactions, and reports. Manage financials, inventory, orders, and customer data through AI chat.",
   "category": "ERP",
-  "icon_url": "icons/netsuite.svg",
+  "icon_url": "icons/netsuite.png",
   "server_type": null,
   "url": null,
   "command": null,

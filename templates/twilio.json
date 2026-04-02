@@ -3,7 +3,7 @@
   "name": "Twilio",
   "description": "Send SMS, make calls, and manage Twilio communications. Send messages, look up phone numbers, and manage conversations and notifications through AI chat.",
   "category": "Communication",
-  "icon_url": "icons/twilio.svg",
+  "icon_url": "icons/twilio.png",
   "server_type": null,
   "url": null,
   "command": null,

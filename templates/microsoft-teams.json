@@ -3,7 +3,7 @@
   "name": "Microsoft Teams",
   "description": "Search messages, send chats, manage channels, and interact with Microsoft Teams through AI chat via the Microsoft Graph API.",
   "category": "Communication",
-  "icon_url": "icons/microsoft-teams.svg",
+  "icon_url": "icons/microsoft-teams.png",
   "server_type": "stdio",
   "command": "npx",
   "args": ["-y", "@floriscornel/teams-mcp@latest"],

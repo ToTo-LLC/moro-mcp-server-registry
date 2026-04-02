@@ -3,7 +3,7 @@
   "name": "Google Workspace",
   "description": "Access Drive, Gmail, Calendar, Sheets, Docs, Chat, and all Google Workspace APIs through AI chat. Powered by the official Google Workspace CLI.",
   "category": "Productivity",
-  "icon_url": "icons/google-workspace.svg",
+  "icon_url": "icons/google-workspace.png",
   "server_type": "stdio",
   "command": "gws",
   "args": ["mcp", "-s", "all"],

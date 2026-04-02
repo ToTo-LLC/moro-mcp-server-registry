@@ -3,7 +3,7 @@
   "name": "Airtable",
   "description": "Query and update Airtable bases, tables, and records. Perform CRUD operations, filter records, and manage relational data through AI chat.",
   "category": "Database",
-  "icon_url": "icons/airtable.svg",
+  "icon_url": "icons/airtable.png",
   "server_type": null,
   "url": null,
   "command": null,

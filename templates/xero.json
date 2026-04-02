@@ -3,7 +3,7 @@
   "name": "Xero",
   "description": "Access Xero accounting data including invoices, contacts, bank transactions, and financial reports through AI chat.",
   "category": "Finance",
-  "icon_url": "icons/xero.svg",
+  "icon_url": "icons/xero.png",
   "server_type": "stdio",
   "command": "npx",
   "args": ["-y", "@xeroapi/xero-mcp-server@latest"],

@@ -3,7 +3,7 @@
   "name": "Zendesk",
   "description": "Manage support tickets, customers, and knowledge base in Zendesk.",
   "category": "Support",
-  "icon_url": "icons/zendesk.svg",
+  "icon_url": "icons/zendesk.png",
   "server_type": null,
   "url": null,
   "command": null,

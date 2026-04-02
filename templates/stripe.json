@@ -3,7 +3,7 @@
   "name": "Stripe",
   "description": "Query Stripe payments, customers, and subscriptions. Look up charges, manage invoices, inspect payment methods, and track revenue through AI chat.",
   "category": "Finance",
-  "icon_url": "icons/stripe.svg",
+  "icon_url": "icons/stripe.png",
   "server_type": null,
   "url": null,
   "command": null,

@@ -3,7 +3,7 @@
   "name": "Dropbox Business",
   "description": "Access, search, upload, and manage files in Dropbox Business through AI chat.",
   "category": "Storage",
-  "icon_url": "icons/dropbox.svg",
+  "icon_url": "icons/dropbox.png",
   "server_type": "http",
   "command": null,
   "args": null,

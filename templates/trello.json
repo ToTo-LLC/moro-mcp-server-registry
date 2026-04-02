@@ -3,7 +3,7 @@
   "name": "Trello",
   "description": "Manage Trello boards, lists, and cards. Create tasks, move cards between lists, add labels and due dates, and track project progress through AI chat.",
   "category": "Project Management",
-  "icon_url": "icons/trello.svg",
+  "icon_url": "icons/trello.png",
   "server_type": null,
   "url": null,
   "command": null,

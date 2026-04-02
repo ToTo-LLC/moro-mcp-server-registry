@@ -3,7 +3,7 @@
   "name": "QuickBooks Online",
   "description": "Access QuickBooks Online financial data including invoices, expenses, customers, vendors, and accounts through AI chat.",
   "category": "Finance",
-  "icon_url": "icons/quickbooks.svg",
+  "icon_url": "icons/quickbooks.png",
   "server_type": "stdio",
   "command": "npx",
   "args": ["-y", "quickbooks-online-mcp-server"],

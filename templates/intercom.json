@@ -3,7 +3,7 @@
   "name": "Intercom",
   "description": "Manage Intercom conversations, contacts, and support tickets. Search customers, reply to conversations, and track support metrics through AI chat.",
   "category": "Support",
-  "icon_url": "icons/intercom.svg",
+  "icon_url": "icons/intercom.png",
   "server_type": null,
   "url": null,
   "command": null,

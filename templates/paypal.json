@@ -3,7 +3,7 @@
   "name": "PayPal",
   "description": "Query PayPal transactions, orders, and payment details. Look up payments, manage invoices, and track transaction history through AI chat.",
   "category": "Finance",
-  "icon_url": "icons/paypal.svg",
+  "icon_url": "icons/paypal.png",
   "server_type": null,
   "url": null,
   "command": null,

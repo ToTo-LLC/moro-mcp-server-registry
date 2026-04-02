@@ -3,7 +3,7 @@
   "name": "SAP",
   "description": "Access SAP ERP data, business objects, and workflows. Query financial, logistics, and HR modules and automate enterprise processes through AI chat.",
   "category": "ERP",
-  "icon_url": "icons/sap.svg",
+  "icon_url": "icons/sap.png",
   "server_type": null,
   "url": null,
   "command": null,

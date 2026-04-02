@@ -3,7 +3,7 @@
   "name": "Freshdesk",
   "description": "Manage support tickets, contacts, and automations in Freshdesk.",
   "category": "Support",
-  "icon_url": "icons/freshdesk.svg",
+  "icon_url": "icons/freshdesk.png",
   "server_type": null,
   "url": null,
   "command": null,

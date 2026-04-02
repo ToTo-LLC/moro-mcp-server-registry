@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-  <rect width="48" height="48" rx="10" fill="#0061D5"/>
-  <g transform="translate(10, 12)">
-    <!-- Box logo - crossing paths forming an X-like shape -->
-    <path d="M14 0L14 8" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M2 8L14 18L26 8" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M2 8L2 16L14 24L26 16L26 8" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
-</svg>

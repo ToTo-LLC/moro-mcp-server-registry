@@ -3,7 +3,7 @@
   "name": "Adobe Sign",
   "description": "Send and manage Adobe Sign agreements and electronic signatures. Create signature workflows, track agreement status, and retrieve signed documents through AI chat.",
   "category": "Document Management",
-  "icon_url": "icons/adobe-sign.svg",
+  "icon_url": "icons/adobe-sign.png",
   "server_type": null,
   "url": null,
   "command": null,

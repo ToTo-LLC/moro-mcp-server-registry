@@ -3,7 +3,7 @@
   "name": "Monday.com",
   "description": "Manage boards, items, and workflows in Monday.com. Create and update items, track project progress, and automate team workflows through AI chat.",
   "category": "Project Management",
-  "icon_url": "icons/monday.svg",
+  "icon_url": "icons/monday.png",
   "server_type": null,
   "url": null,
   "command": null,

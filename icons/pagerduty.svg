@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-  <rect width="48" height="48" rx="10" fill="#06AC38"/>
-  <!-- PagerDuty bell/alert icon -->
-  <path d="M24 10 C18 10 14 14 14 20 L14 28 L10 32 L38 32 L34 28 L34 20 C34 14 30 10 24 10 Z" fill="white"/>
-  <circle cx="24" cy="36" r="3" fill="white"/>
-  <rect x="21" y="8" width="6" height="4" rx="3" fill="white"/>
-</svg>

@@ -3,7 +3,7 @@
   "name": "Microsoft 365",
   "description": "Access Outlook mail, calendar, OneDrive files, Excel, contacts, tasks, and other Microsoft 365 services through AI chat via the Microsoft Graph API.",
   "category": "Productivity",
-  "icon_url": "icons/microsoft-365.svg",
+  "icon_url": "icons/microsoft-365.png",
   "server_type": "stdio",
   "command": "npx",
   "args": ["-y", "@softeria/ms-365-mcp-server", "--preset", "all"],

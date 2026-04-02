@@ -3,7 +3,7 @@
   "name": "HubSpot",
   "description": "Manage HubSpot CRM contacts, companies, deals, and tickets. Search and update records, track sales pipelines, and automate CRM workflows through AI chat.",
   "category": "CRM",
-  "icon_url": "icons/hubspot.svg",
+  "icon_url": "icons/hubspot.png",
   "server_type": "http",
   "command": null,
   "args": null,

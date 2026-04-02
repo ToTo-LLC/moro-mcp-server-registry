@@ -3,7 +3,7 @@
   "name": "DocuSign",
   "description": "Send, track, and manage DocuSign envelopes and electronic signatures. Create signature requests, check envelope status, and retrieve signed documents through AI chat.",
   "category": "Document Management",
-  "icon_url": "icons/docusign.svg",
+  "icon_url": "icons/docusign.png",
   "server_type": null,
   "url": null,
   "command": null,

@@ -3,7 +3,7 @@
   "name": "PagerDuty",
   "description": "Manage PagerDuty incidents, on-call schedules, and alerts. Acknowledge and resolve incidents, query on-call rotations, and track service reliability through AI chat.",
   "category": "Operations",
-  "icon_url": "icons/pagerduty.svg",
+  "icon_url": "icons/pagerduty.png",
   "server_type": null,
   "url": null,
   "command": null,

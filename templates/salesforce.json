@@ -3,7 +3,7 @@
   "name": "Salesforce",
   "description": "Query, create, and manage Salesforce CRM data including leads, contacts, accounts, opportunities, and custom objects through AI chat.",
   "category": "CRM",
-  "icon_url": "icons/salesforce.svg",
+  "icon_url": "icons/salesforce.png",
   "server_type": "stdio",
   "command": "npx",
   "args": ["-y", "@salesforce/mcp", "--orgs", "DEFAULT_TARGET_ORG", "--toolsets", "orgs,metadata,data,users"],

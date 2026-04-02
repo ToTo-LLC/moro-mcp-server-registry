@@ -3,7 +3,7 @@
   "name": "Notion",
   "description": "Read and write Notion pages, databases, and blocks. Search your workspace, create documents, and manage structured data through AI chat.",
   "category": "Productivity",
-  "icon_url": "icons/notion.svg",
+  "icon_url": "icons/notion.png",
   "server_type": null,
   "url": null,
   "command": null,

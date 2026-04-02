@@ -3,7 +3,7 @@
   "name": "Confluence",
   "description": "Confluence is included in the Atlassian (Jira & Confluence) MCP server.",
   "category": "Knowledge Base",
-  "icon_url": "icons/confluence.svg",
+  "icon_url": "icons/confluence.png",
   "server_type": null,
   "command": null,
   "args": null,

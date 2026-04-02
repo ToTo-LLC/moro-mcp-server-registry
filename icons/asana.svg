@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-  <rect width="48" height="48" rx="10" fill="#F06A6A"/>
-  <g transform="translate(10, 10)">
-    <!-- Asana three-dot logo -->
-    <circle cx="14" cy="6" r="5.5" fill="white"/>
-    <circle cx="5.5" cy="20" r="5.5" fill="white"/>
-    <circle cx="22.5" cy="20" r="5.5" fill="white"/>
-  </g>
-</svg>

@@ -3,7 +3,7 @@
   "name": "Jira & Confluence",
   "description": "Access Jira issues, boards, sprints, and Confluence pages through AI chat. Powered by Atlassian's official Rovo MCP server.",
   "category": "Project Management",
-  "icon_url": "icons/jira.svg",
+  "icon_url": "icons/jira.png",
   "server_type": "http",
   "command": null,
   "args": null,
