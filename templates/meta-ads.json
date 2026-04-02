@@ -1,0 +1,26 @@
+{
+  "id": "meta-ads",
+  "name": "Meta Ads",
+  "description": "Manage and analyze Facebook and Instagram advertising campaigns, ad sets, and creatives. Get performance insights, optimize budgets, and create campaigns through AI chat. Powered by the Pipeboard Meta Ads MCP server.",
+  "category": "Advertising",
+  "icon_url": "icons/meta-ads.png",
+  "server_type": "http",
+  "command": null,
+  "args": null,
+  "url": "https://mcp.pipeboard.co/meta-ads-mcp",
+  "org_auth_type": "api_key",
+  "user_auth_type": "api_key",
+  "oauth_config": null,
+  "credentials_needed": ["meta_access_token"],
+  "user_auth_instructions": "To connect your Meta Ads account:\n1. Go to https://developers.facebook.com/tools/explorer/\n2. Select your app and generate an access token\n3. Required permissions: ads_read, ads_management\n4. Paste the access token below\n\nAlternatively, create a System User token in Business Manager for long-lived access.",
+  "setup_notes": "Uses the Pipeboard Meta Ads community MCP server (remote HTTP transport).\n\nThis server connects to Meta's Marketing API to manage Facebook and Instagram ads.\n\nAdmin setup:\n1. Create a Meta App at https://developers.facebook.com/apps/\n2. Add the Marketing API product\n3. Generate a System User access token in Business Manager with ads_read and ads_management permissions\n4. Enter the access token in the server configuration\n\nAlternatively, install locally:\n  pipx run meta-ads-mcp\n\nCapabilities: campaign analysis, budget optimization, creative testing, performance reporting.",
+  "env_mapping": {
+    "META_ACCESS_TOKEN": "{{user_credential:meta_access_token}}"
+  },
+  "tags": ["meta", "facebook", "instagram", "ads", "advertising", "campaigns", "social", "marketing"],
+  "source": {
+    "package": "meta-ads-mcp",
+    "repository": "https://github.com/pipeboard-co/meta-ads-mcp",
+    "docs": "https://developers.facebook.com/docs/marketing-apis/"
+  }
+}

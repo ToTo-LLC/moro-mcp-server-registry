@@ -182,6 +182,33 @@
       "template_type": "stub"
     },
     {
+      "id": "google-analytics",
+      "name": "Google Analytics",
+      "icon_url": "icons/google-analytics.png",
+      "category": "Analytics",
+      "url_pattern": "*.analytics.google.com",
+      "template_path": "templates/google-analytics.json",
+      "template_type": "full"
+    },
+    {
+      "id": "google-ads",
+      "name": "Google Ads",
+      "icon_url": "icons/google-ads.png",
+      "category": "Advertising",
+      "url_pattern": "*.ads.google.com",
+      "template_path": "templates/google-ads.json",
+      "template_type": "full"
+    },
+    {
+      "id": "meta-ads",
+      "name": "Meta Ads",
+      "icon_url": "icons/meta-ads.png",
+      "category": "Advertising",
+      "url_pattern": "*.facebook.com",
+      "template_path": "templates/meta-ads.json",
+      "template_type": "full"
+    },
+    {
       "id": "google-workspace",
       "name": "Google Workspace",
       "icon_url": "icons/google-workspace.png",
