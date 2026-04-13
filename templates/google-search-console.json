@@ -1,0 +1,44 @@
+{
+  "id": "google-search-console",
+  "name": "Google Search Console",
+  "description": "Analyze search performance, inspect URL indexing status, manage sitemaps, and monitor SEO health for your websites. Provides read-only access by default with optional write operations for site and sitemap management.",
+  "category": "SEO",
+  "icon_url": "icons/google-search-console.png",
+  "server_type": "stdio",
+  "command": "npx",
+  "args": ["-y", "mcp-gsc@latest"],
+  "url": null,
+  "org_auth_type": "oauth2",
+  "user_auth_type": "oauth2",
+  "oauth_config": {
+    "authorization_url": "https://accounts.google.com/o/oauth2/v2/auth",
+    "token_url": "https://oauth2.googleapis.com/token",
+    "scopes": "https://www.googleapis.com/auth/webmasters",
+    "scope_param_name": "scope",
+    "extra_auth_params": {
+      "access_type": "offline",
+      "prompt": "consent"
+    }
+  },
+  "credentials_needed": ["client_id", "client_secret"],
+  "user_auth_instructions": "Click 'Connect' to link your Google account.\nYou'll be prompted to sign in and grant access to your Google Search Console properties.\n\nNote: The webmasters scope grants both read and write access. Write operations (add/delete sites, submit sitemaps) are disabled by default.",
+  "setup_notes": "Uses the mcp-gsc community MCP server for Google Search Console.\n\nAdmin setup:\n1. Go to https://console.cloud.google.com/apis/credentials\n2. Create an OAuth 2.0 Client ID (type: Web application)\n3. Add authorized redirect URI:\n   {your_app_url}/api/v1/mcp-servers/{server_id}/oauth/callback\n4. Enable the Google Search Console API\n5. Enter the Client ID and Client Secret\n\nSecurity notes:\n- Read-only by default. Write tools (add/delete sites, submit sitemaps) require GOOGLE_GSC_ENABLE_WRITES=true.\n- The export_csv tool accepts an output_path parameter; restrict in sandboxed environments.\n- The server performs an update check to GitHub on startup (no opt-out).\n\nOptional: Set GOOGLE_GSC_ENABLE_EXTENDED_TOOLS=true to enable 13 additional SEO analysis tools (performance overview, quick wins, cannibalization detection, content decay, etc.).",
+  "env_mapping": {
+    "GOOGLE_GSC_CREDENTIALS_PATH": "{{org_credentials_file}}",
+    "GOOGLE_GSC_TOKEN_PATH": "{{user_token_file}}"
+  },
+  "tags": ["google", "search-console", "seo", "webmaster", "indexing", "sitemap", "search-analytics"],
+  "source": {
+    "package": "mcp-gsc",
+    "repository": "https://github.com/pijusz/mcp-gsc",
+    "docs": "https://search.google.com/search-console/about"
+  },
+  "meta": {
+    "security_audit": {
+      "date": "2026-04-13",
+      "version": "0.1.7",
+      "verdict": "safe",
+      "notes": "No critical issues. Two HIGH findings: (1) export_csv allows arbitrary file path writes - mitigate with sandboxing. (2) Startup phones home to GitHub for update checks - privacy concern only."
+    }
+  }
+}

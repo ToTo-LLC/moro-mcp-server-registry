@@ -200,6 +200,15 @@
       "template_type": "full"
     },
     {
+      "id": "google-search-console",
+      "name": "Google Search Console",
+      "icon_url": "icons/google-search-console.png",
+      "category": "SEO",
+      "url_pattern": "*.search.google.com",
+      "template_path": "templates/google-search-console.json",
+      "template_type": "full"
+    },
+    {
       "id": "meta-ads",
       "name": "Meta Ads",
       "icon_url": "icons/meta-ads.png",
