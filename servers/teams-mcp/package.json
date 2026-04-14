@@ -1,6 +1,6 @@
 {
-  "name": "@floriscornel/teams-mcp",
-  "version": "1.0.0",
+  "name": "@totollc/teams-mcp",
+  "version": "0.1.0",
   "description": "MCP server for Microsoft Graph Teams integration",
   "type": "module",
   "main": "dist/index.js",
@@ -8,12 +8,14 @@
     "teams-mcp": "dist/index.js"
   },
   "files": [
-    "dist/**/*",
+    "dist",
     "README.md",
-    "package.json"
+    "LICENSE",
+    "NOTICE"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "npm run clean && npm run compile",
@@ -45,7 +47,8 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/floriscornel/teams-mcp.git"
+    "url": "git+https://github.com/ToTo-LLC/moro-mcp-server-registry.git",
+    "directory": "servers/teams-mcp"
   },
   "homepage": "https://github.com/floriscornel/teams-mcp#readme",
   "bugs": {
