@@ -56,9 +56,7 @@ export function scoreMeeting(
   if (criteria.subjectContains) {
     const needle = criteria.subjectContains.toLowerCase();
     if (subject.includes(needle)) {
-      // Base weight + small density bonus (needle/subject ratio) to break ties.
-      const density = needle.length / (subject.length || 1);
-      score += WEIGHT_SUBJECT + density;
+      score += WEIGHT_SUBJECT;
       matchReasons.push(`subject contains "${criteria.subjectContains}"`);
     }
   }

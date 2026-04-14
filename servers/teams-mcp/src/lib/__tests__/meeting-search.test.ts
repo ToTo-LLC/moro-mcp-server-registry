@@ -101,8 +101,16 @@ describe("rankMeetings", () => {
   it("returns top N sorted by score descending", () => {
     const meetings: OnlineMeeting[] = [
       baseMeeting({ id: "low", subject: "Unrelated standup" }),
-      baseMeeting({ id: "high", subject: "Client kickoff call" }),
-      baseMeeting({ id: "mid", subject: "Weekly kickoff review" }),
+      baseMeeting({
+        id: "high",
+        subject: "Client kickoff call",
+        startDateTime: "2026-04-13T15:00:00Z",
+      }),
+      baseMeeting({
+        id: "mid",
+        subject: "Weekly kickoff review",
+        startDateTime: "2026-04-06T15:00:00Z",
+      }),
     ];
     const ranked = rankMeetings(meetings, { subjectContains: "kickoff" }, NOW, 2);
     expect(ranked).toHaveLength(2);
