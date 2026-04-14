@@ -65,7 +65,7 @@ async function authenticate(readOnly: boolean) {
 
     const result: AuthenticationResult | null = await client.acquireTokenByDeviceCode({
       scopes,
-      deviceCodeCallback: (response) => {
+      deviceCodeCallback: (response: { verificationUri: string; userCode: string; message: string }) => {
         console.log("\n📱 Please complete authentication:");
         console.log(`🌐 Visit: ${response.verificationUri}`);
         console.log(`🔑 Enter code: ${response.userCode}`);

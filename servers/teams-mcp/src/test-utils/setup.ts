@@ -314,7 +314,12 @@ afterEach(() => {
 });
 
 // Helper function to create mock authenticated GraphService
-export function createMockGraphService() {
+export function createMockGraphService(): {
+  getInstance: ReturnType<typeof vi.fn>;
+  getAuthStatus: ReturnType<typeof vi.fn>;
+  getClient: ReturnType<typeof vi.fn>;
+  isAuthenticated: ReturnType<typeof vi.fn>;
+} {
   return {
     getInstance: vi.fn().mockReturnThis(),
     getAuthStatus: vi.fn().mockResolvedValue({
@@ -335,7 +340,12 @@ export function createMockGraphService() {
 }
 
 // Helper function to create mock unauthenticated GraphService
-export function createMockUnauthenticatedGraphService() {
+export function createMockUnauthenticatedGraphService(): {
+  getInstance: ReturnType<typeof vi.fn>;
+  getAuthStatus: ReturnType<typeof vi.fn>;
+  getClient: ReturnType<typeof vi.fn>;
+  isAuthenticated: ReturnType<typeof vi.fn>;
+} {
   return {
     getInstance: vi.fn().mockReturnThis(),
     getAuthStatus: vi.fn().mockResolvedValue({
@@ -347,7 +357,13 @@ export function createMockUnauthenticatedGraphService() {
 }
 
 // Helper function to create mock MCP server
-export function createMockMcpServer() {
+export function createMockMcpServer(): {
+  tool: ReturnType<typeof vi.fn>;
+  registerTool: ReturnType<typeof vi.fn>;
+  connect: ReturnType<typeof vi.fn>;
+  getTool: (name: string) => unknown;
+  getAllTools: () => string[];
+} {
   const tools = new Map();
 
   return {
