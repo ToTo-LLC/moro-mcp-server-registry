@@ -135,4 +135,31 @@ describe("rankMeetings", () => {
     const ranked = rankMeetings(meetings, {}, NOW, 10);
     expect(ranked[0].id).toBe("new");
   });
+
+  it("returns empty array for empty meetings input", () => {
+    expect(rankMeetings([], { subjectContains: "kickoff" }, NOW, 10)).toEqual([]);
+    expect(rankMeetings([], {}, NOW, 10)).toEqual([]);
+  });
+
+  it("respects limit: 0 by returning no results", () => {
+    const meetings: OnlineMeeting[] = [
+      baseMeeting({ id: "a", subject: "Kickoff call" }),
+      baseMeeting({ id: "b", subject: "Kickoff review" }),
+    ];
+    expect(rankMeetings(meetings, { subjectContains: "kickoff" }, NOW, 0)).toEqual([]);
+  });
+
+  it("sorts meetings outside the 90-day recency window below ones inside it", () => {
+    // NOW is 2026-04-14. 2026-01-01 is ~103 days earlier → outside the 90-day
+    // window, recencyScore returns 0. 2026-04-13 is 1 day earlier → well inside.
+    const meetings: OnlineMeeting[] = [
+      baseMeeting({ id: "old", startDateTime: "2026-01-01T00:00:00Z" }),
+      baseMeeting({ id: "new", startDateTime: "2026-04-13T00:00:00Z" }),
+    ];
+    const ranked = rankMeetings(meetings, {}, NOW, 10);
+    expect(ranked[0].id).toBe("new");
+    expect(ranked[0].score).toBeGreaterThan(0);
+    expect(ranked[1].id).toBe("old");
+    expect(ranked[1].score).toBe(0);
+  });
 });
