@@ -1,0 +1,59 @@
+name: Publish @totollc/teams-mcp
+
+on:
+  push:
+    tags:
+      - 'teams-mcp-v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm --filter @totollc/teams-mcp run build
+
+      - name: Test
+        run: pnpm --filter @totollc/teams-mcp run test
+
+      - name: Verify tag matches package.json version
+        working-directory: servers/teams-mcp
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#teams-mcp-v}"
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "Tag version ($TAG_VERSION) does not match package.json version ($PKG_VERSION)"
+            exit 1
+          fi
+
+      - name: Verify package name
+        working-directory: servers/teams-mcp
+        run: |
+          PKG_NAME="$(node -p "require('./package.json').name")"
+          if [ "$PKG_NAME" != "@totollc/teams-mcp" ]; then
+            echo "Refusing to publish: package name is $PKG_NAME, expected @totollc/teams-mcp"
+            exit 1
+          fi
+
+      - name: Publish
+        working-directory: servers/teams-mcp
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
