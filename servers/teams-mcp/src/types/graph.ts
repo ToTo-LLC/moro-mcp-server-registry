@@ -188,3 +188,50 @@ export interface SearchHit {
     };
   };
 }
+
+// --- Online meetings ---------------------------------------------------------
+
+export interface MeetingParticipantIdentity {
+  displayName?: string | null;
+  id?: string | null;
+  userPrincipalName?: string | null;
+}
+
+export interface MeetingParticipant {
+  upn?: string | null;
+  role?: 'presenter' | 'attendee' | 'producer' | string | null;
+  identity?: {
+    user?: MeetingParticipantIdentity | null;
+    [key: string]: unknown;
+  } | null;
+}
+
+export interface MeetingParticipantInfo {
+  organizer?: MeetingParticipant | null;
+  attendees?: MeetingParticipant[] | null;
+}
+
+export interface OnlineMeeting {
+  id: string;
+  subject?: string | null;
+  startDateTime?: string | null;
+  endDateTime?: string | null;
+  joinWebUrl?: string | null;
+  participants?: MeetingParticipantInfo | null;
+  recordAutomatically?: boolean | null;
+}
+
+// --- Meeting transcripts -----------------------------------------------------
+
+export interface CallTranscript {
+  id: string;
+  createdDateTime?: string | null;
+  transcriptContentUrl?: string | null;
+  meetingId?: string | null;
+  meetingOrganizer?: MeetingParticipantIdentity | null;
+}
+
+export interface TranscriptContent {
+  format: 'vtt';
+  content: string;
+}
