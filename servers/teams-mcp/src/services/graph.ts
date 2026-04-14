@@ -5,6 +5,11 @@ import { cachePlugin } from "../msal-cache.js";
 const CLIENT_ID = "14d82eec-204b-4c2f-b7e8-296a70dab67e";
 const AUTHORITY = "https://login.microsoftonline.com/common";
 
+const GRAPH_AUDIENCES = new Set([
+  "https://graph.microsoft.com",
+  "00000003-0000-0000-c000-000000000000",
+]);
+
 /** Scopes sufficient for read-only operations (no message sending, no file uploads). */
 export const READ_ONLY_SCOPES = [
   "User.Read",
@@ -138,7 +143,7 @@ export class GraphService {
 
     if (!result) {
       throw new Error(
-        "Failed to acquire access token. Please re-authenticate: npx @floriscornel/teams-mcp@latest authenticate"
+        "Failed to acquire access token. Please re-authenticate: npx @totollc/teams-mcp@latest authenticate"
       );
     }
 
@@ -172,7 +177,7 @@ export class GraphService {
 
     if (!this.client) {
       throw new Error(
-        "Not authenticated. Please run the authentication CLI tool first: npx @floriscornel/teams-mcp@latest authenticate"
+        "Not authenticated. Please run the authentication CLI tool first: npx @totollc/teams-mcp@latest authenticate"
       );
     }
     return this.client;
@@ -191,8 +196,8 @@ export class GraphService {
 
     try {
       const payload = JSON.parse(atob(tokenSplits[1]));
-      const audiences = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
-      if (!audiences.includes("https://graph.microsoft.com")) {
+      const audiences: string[] = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
+      if (!audiences.some((a) => GRAPH_AUDIENCES.has(a))) {
         console.error("Invalid JWT token: Not a valid Microsoft Graph token");
         return undefined;
       }
