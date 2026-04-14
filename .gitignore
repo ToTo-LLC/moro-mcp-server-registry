@@ -1,0 +1,8 @@
+node_modules/
+servers/*/dist/
+servers/*/node_modules/
+servers/*/.env
+servers/*/.env.*
+!servers/*/.env.example
+*.tgz
+.pnpm-store/
