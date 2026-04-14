@@ -1,3 +1,5 @@
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
 import {
   type MeetingSearchCriteria,
   rankMeetings,
@@ -183,4 +185,291 @@ export async function findMeetings(
   if (end !== undefined) criteria.endDateTime = end;
 
   return rankMeetings(candidates, criteria, now, limit);
+}
+
+// ---------- MCP tool registration -------------------------------------------
+
+const DELEGATED_SCOPE_NOTE =
+  " Note: Microsoft Graph only returns meetings the signed-in user organized. Meetings you only attended will not appear.";
+
+export function registerMeetingTools(
+  server: McpServer,
+  graphService: GraphService,
+  _readOnly: boolean
+) {
+  // find_meetings (primary user-facing entry point)
+  server.registerTool(
+    "find_meetings",
+    {
+      title: "Find Meetings",
+      description:
+        "Find Teams meetings using fuzzy multi-criteria search. Use this FIRST when the user references a meeting by name, attendees, or an approximate date. Supports free-text query, subject substring, participant name/email, and a date range. Returns the top matches ranked by a weighted score with human-readable match reasons." +
+        DELEGATED_SCOPE_NOTE,
+      inputSchema: {
+        query: z
+          .string()
+          .optional()
+          .describe("Free-text fuzzy query matched against meeting subject (e.g. 'q4 kickof')"),
+        subjectContains: z
+          .string()
+          .optional()
+          .describe("Case-insensitive substring the subject must contain"),
+        participantNameOrEmail: z
+          .string()
+          .optional()
+          .describe(
+            "Substring match against any participant's display name, UPN, or email address"
+          ),
+        startDateTime: z
+          .string()
+          .optional()
+          .describe("ISO 8601 start of the search window. Defaults to 30 days ago."),
+        endDateTime: z
+          .string()
+          .optional()
+          .describe("ISO 8601 end of the search window. Defaults to now."),
+        limit: z
+          .number()
+          .min(1)
+          .max(FIND_MEETINGS_MAX_LIMIT)
+          .optional()
+          .default(FIND_MEETINGS_DEFAULT_LIMIT)
+          .describe(
+            `Max results to return. Default ${FIND_MEETINGS_DEFAULT_LIMIT}, max ${FIND_MEETINGS_MAX_LIMIT}.`
+          ),
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async (args) => {
+      try {
+        const results = await findMeetings(graphService, args as FindMeetingsParams);
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(results, null, 2),
+            },
+          ],
+        };
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `❌ Error: ${errorMessage}`,
+            },
+          ],
+        };
+      }
+    }
+  );
+
+  // list_online_meetings
+  server.registerTool(
+    "list_online_meetings",
+    {
+      title: "List Online Meetings",
+      description:
+        "List the signed-in user's online meetings chronologically. Prefer find_meetings when the user has a specific meeting in mind." +
+        DELEGATED_SCOPE_NOTE,
+      inputSchema: {
+        startDateTime: z.string().optional().describe("ISO 8601 lower bound on startDateTime"),
+        endDateTime: z.string().optional().describe("ISO 8601 upper bound on startDateTime"),
+        subjectContains: z
+          .string()
+          .optional()
+          .describe("Optional case-insensitive subject substring filter (client-side)"),
+        top: z
+          .number()
+          .min(1)
+          .max(LIST_MEETINGS_MAX_TOP)
+          .optional()
+          .default(LIST_MEETINGS_DEFAULT_TOP)
+          .describe(
+            `Max meetings to return. Default ${LIST_MEETINGS_DEFAULT_TOP}, max ${LIST_MEETINGS_MAX_TOP}.`
+          ),
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async (args) => {
+      try {
+        const results = await listOnlineMeetings(graphService, args as ListOnlineMeetingsParams);
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(results, null, 2),
+            },
+          ],
+        };
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `❌ Error: ${errorMessage}`,
+            },
+          ],
+        };
+      }
+    }
+  );
+
+  // get_online_meeting
+  server.registerTool(
+    "get_online_meeting",
+    {
+      title: "Get Online Meeting",
+      description:
+        "Fetch a single online meeting by meeting ID or by Teams join URL (auto-detected)." +
+        DELEGATED_SCOPE_NOTE,
+      inputSchema: {
+        meetingIdOrJoinUrl: z
+          .string()
+          .describe(
+            "Either a meeting ID returned by find_meetings or list_online_meetings, or a full Teams join URL starting with https://teams.microsoft.com/"
+          ),
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async (args) => {
+      try {
+        const meeting = await getOnlineMeeting(graphService, args);
+        if (!meeting) {
+          return {
+            content: [
+              {
+                type: "text" as const,
+                text: "No meeting found. If you used a join URL, confirm it matches exactly and that the meeting was organized by the signed-in user.",
+              },
+            ],
+          };
+        }
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(meeting, null, 2),
+            },
+          ],
+        };
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `❌ Error: ${errorMessage}`,
+            },
+          ],
+        };
+      }
+    }
+  );
+
+  // list_meeting_transcripts
+  server.registerTool(
+    "list_meeting_transcripts",
+    {
+      title: "List Meeting Transcripts",
+      description:
+        "List all available transcripts for a specific meeting. Returns an empty array if the meeting was not recorded with transcription enabled.",
+      inputSchema: {
+        meetingId: z
+          .string()
+          .describe(
+            "Meeting ID returned by find_meetings, list_online_meetings, or get_online_meeting"
+          ),
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async (args) => {
+      try {
+        const transcripts = await listMeetingTranscripts(graphService, args);
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(transcripts, null, 2),
+            },
+          ],
+        };
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `❌ Error: ${errorMessage}`,
+            },
+          ],
+        };
+      }
+    }
+  );
+
+  // get_meeting_transcript_content
+  server.registerTool(
+    "get_meeting_transcript_content",
+    {
+      title: "Get Meeting Transcript Content",
+      description:
+        "Fetch the full WebVTT content of a specific meeting transcript, including speaker attribution (e.g. <v Alice Example>). Use list_meeting_transcripts first to get the transcriptId.",
+      inputSchema: {
+        meetingId: z.string().describe("Meeting ID"),
+        transcriptId: z.string().describe("Transcript ID from list_meeting_transcripts"),
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async (args) => {
+      try {
+        const result = await getMeetingTranscriptContent(graphService, args);
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: result.content || "(empty transcript)",
+            },
+          ],
+        };
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `❌ Error: ${errorMessage}`,
+            },
+          ],
+        };
+      }
+    }
+  );
 }
