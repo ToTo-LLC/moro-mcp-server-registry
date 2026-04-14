@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { mockUser, server } from "../../test-utils/setup.js";
+import { mockUser } from "../../test-utils/setup.js";
 
 // Mock the msal-cache plugin
 vi.mock("../../msal-cache.js", () => ({
@@ -46,18 +46,16 @@ describe("GraphService", () => {
   let graphService: GraphService;
 
   beforeEach(() => {
-    server.listen({ onUnhandledRequest: "error" });
+    // msw server lifecycle is managed globally by src/test-utils/vitest.setup.ts
+    // (beforeAll→listen, afterEach→resetHandlers, afterAll→close). Calling
+    // server.listen() here again would trigger msw 2.x's "already applied"
+    // interceptor invariant under pnpm's strict isolation.
     vi.clearAllMocks();
     setupDefaultMsalMock();
 
     // Reset GraphService singleton
     (GraphService as any).instance = undefined;
     graphService = GraphService.getInstance();
-  });
-
-  afterEach(() => {
-    server.resetHandlers();
-    server.close();
   });
 
   describe("getInstance", () => {
