@@ -1,0 +1,16 @@
+{
+  "name": "moro-mcp-server-registry",
+  "version": "0.0.0",
+  "private": true,
+  "description": "MCP server registry and forked server packages for TomorrowToday",
+  "scripts": {
+    "build": "pnpm -r --filter './servers/*' run build",
+    "test": "pnpm -r --filter './servers/*' run test",
+    "lint": "pnpm -r --filter './servers/*' run lint",
+    "typecheck": "pnpm -r --filter './servers/*' run typecheck"
+  },
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20"
+  }
+}
