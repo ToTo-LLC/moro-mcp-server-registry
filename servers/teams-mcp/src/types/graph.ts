@@ -199,7 +199,7 @@ export interface MeetingParticipantIdentity {
 
 export interface MeetingParticipant {
   upn?: string | null;
-  role?: 'presenter' | 'attendee' | 'producer' | string | null;
+  role?: "presenter" | "attendee" | "producer" | string | null;
   identity?: {
     user?: MeetingParticipantIdentity | null;
     [key: string]: unknown;
@@ -232,6 +232,6 @@ export interface CallTranscript {
 }
 
 export interface TranscriptContent {
-  format: 'vtt';
+  format: "vtt";
   content: string;
 }
