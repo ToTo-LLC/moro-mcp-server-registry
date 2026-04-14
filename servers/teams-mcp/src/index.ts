@@ -14,6 +14,7 @@ import { cachePlugin } from "./msal-cache.js";
 import { FULL_SCOPES, GraphService, READ_ONLY_SCOPES } from "./services/graph.js";
 import { registerAuthTools } from "./tools/auth.js";
 import { registerChatTools } from "./tools/chats.js";
+import { registerMeetingTools } from "./tools/meetings.js";
 import { registerSearchTools } from "./tools/search.js";
 import { registerTeamsTools } from "./tools/teams.js";
 import { registerUsersTools } from "./tools/users.js";
@@ -65,7 +66,11 @@ async function authenticate(readOnly: boolean) {
 
     const result: AuthenticationResult | null = await client.acquireTokenByDeviceCode({
       scopes,
-      deviceCodeCallback: (response: { verificationUri: string; userCode: string; message: string }) => {
+      deviceCodeCallback: (response: {
+        verificationUri: string;
+        userCode: string;
+        message: string;
+      }) => {
         console.log("\n📱 Please complete authentication:");
         console.log(`🌐 Visit: ${response.verificationUri}`);
         console.log(`🔑 Enter code: ${response.userCode}`);
@@ -224,6 +229,7 @@ async function startMcpServer(readOnly: boolean) {
   registerTeamsTools(server, graphService, readOnly);
   registerChatTools(server, graphService, readOnly);
   registerSearchTools(server, graphService, readOnly);
+  registerMeetingTools(server, graphService, readOnly);
 
   // Start server
   const transport = new StdioServerTransport();
