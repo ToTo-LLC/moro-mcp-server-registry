@@ -45,8 +45,13 @@ interface CalendarEvent {
  *
  * Microsoft Graph does NOT support listing /me/onlineMeetings directly — that
  * endpoint is lookup-only (filter by joinWebUrl or videoTeleconferenceId, or
- * GET by id). The correct delegated-auth path is to list /me/events with
- * isOnlineMeeting=true, then resolve each event's joinUrl to an OnlineMeeting.
+ * GET by id). The correct delegated-auth path is to list /me/events by date
+ * range, then resolve each event's joinUrl to an OnlineMeeting.
+ *
+ * Note: the `isOnlineMeeting` property is readable but NOT filterable on
+ * /me/events ("The property 'isOnlineMeeting' does not support filtering").
+ * We filter online meetings client-side by presence of onlineMeeting.joinUrl.
+ * To compensate for non-online events in the result, we over-fetch by 2x.
  *
  * This is an N+1 pattern: 1 events call + N join-URL lookups. Callers should
  * cap `top` accordingly.
@@ -55,20 +60,34 @@ async function fetchOrganizedMeetingsViaCalendar(
   graphService: GraphService,
   startDateTime: string | undefined,
   endDateTime: string | undefined,
-  top: number
+  top: number,
+  nowFactory: () => Date = () => new Date()
 ): Promise<OnlineMeeting[]> {
   const client = await graphService.getClient();
 
-  const filterParts = ["isOnlineMeeting eq true"];
-  if (startDateTime) filterParts.push(`start/dateTime ge '${startDateTime}'`);
-  if (endDateTime) filterParts.push(`start/dateTime le '${endDateTime}'`);
+  // Ensure we always have SOME date constraint — /me/events with no filter
+  // would return the user's entire calendar.
+  let effectiveStart = startDateTime;
+  let effectiveEnd = endDateTime;
+  if (!effectiveStart && !effectiveEnd) {
+    const win = defaultWindow(nowFactory());
+    effectiveStart = win.start;
+    effectiveEnd = win.end;
+  }
+
+  const filterParts: string[] = [];
+  if (effectiveStart) filterParts.push(`start/dateTime ge '${effectiveStart}'`);
+  if (effectiveEnd) filterParts.push(`start/dateTime le '${effectiveEnd}'`);
   const eventsFilter = filterParts.join(" and ");
+
+  // Over-fetch to account for non-online events filtered out client-side.
+  const overfetchTop = Math.min(top * 2, 200);
 
   const eventsResponse = (await client
     .api("/me/events")
     .filter(eventsFilter)
     .orderby("start/dateTime desc")
-    .top(top)
+    .top(overfetchTop)
     .select(
       "id,subject,start,end,organizer,attendees,onlineMeeting,isOnlineMeeting,onlineMeetingProvider"
     )
@@ -76,9 +95,12 @@ async function fetchOrganizedMeetingsViaCalendar(
 
   const events = eventsResponse?.value ?? [];
 
+  // Client-side: keep only events that are online meetings with a joinUrl we
+  // can resolve, preserving calendar order, then cap at `top`.
   const joinUrls = events
     .map((e) => e.onlineMeeting?.joinUrl)
-    .filter((url): url is string => typeof url === "string" && url.length > 0);
+    .filter((url): url is string => typeof url === "string" && url.length > 0)
+    .slice(0, top);
 
   const resolved: OnlineMeeting[] = [];
   for (const joinUrl of joinUrls) {

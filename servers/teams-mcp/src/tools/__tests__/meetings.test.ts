@@ -106,23 +106,23 @@ describe("listOnlineMeetings", () => {
     expect(result.map((m) => m.id)).toEqual(["m1", "m2"]);
   });
 
-  it("applies default top of LIST_MEETINGS_DEFAULT_TOP to the events query", async () => {
+  it("over-fetches (top * 2) to compensate for client-side online-meeting filter", async () => {
     const { graphService, chainable } = createMockGraphServiceWithApi([{ value: [] }]);
 
     await listOnlineMeetings(graphService, {});
 
-    expect(chainable.top).toHaveBeenCalledWith(LIST_MEETINGS_DEFAULT_TOP);
+    expect(chainable.top).toHaveBeenCalledWith(LIST_MEETINGS_DEFAULT_TOP * 2);
   });
 
-  it("clamps top to LIST_MEETINGS_MAX_TOP when top=999 is provided", async () => {
+  it("clamps top to LIST_MEETINGS_MAX_TOP * 2 when top=999 is provided", async () => {
     const { graphService, chainable } = createMockGraphServiceWithApi([{ value: [] }]);
 
     await listOnlineMeetings(graphService, { top: 999 });
 
-    expect(chainable.top).toHaveBeenCalledWith(LIST_MEETINGS_MAX_TOP);
+    expect(chainable.top).toHaveBeenCalledWith(LIST_MEETINGS_MAX_TOP * 2);
   });
 
-  it("applies date range as calendar start/dateTime filter", async () => {
+  it("applies date range as calendar start/dateTime filter (no isOnlineMeeting, Graph forbids it)", async () => {
     const { graphService, chainable } = createMockGraphServiceWithApi([{ value: [] }]);
 
     await listOnlineMeetings(graphService, {
@@ -131,16 +131,22 @@ describe("listOnlineMeetings", () => {
     });
 
     expect(chainable.filter).toHaveBeenCalledWith(
-      "isOnlineMeeting eq true and start/dateTime ge '2026-04-01T00:00:00Z' and start/dateTime le '2026-04-14T23:59:59Z'"
+      "start/dateTime ge '2026-04-01T00:00:00Z' and start/dateTime le '2026-04-14T23:59:59Z'"
     );
   });
 
-  it("always filters isOnlineMeeting even when no dates provided", async () => {
+  it("applies a default date window when no dates provided", async () => {
     const { graphService, chainable } = createMockGraphServiceWithApi([{ value: [] }]);
 
     await listOnlineMeetings(graphService, {});
 
-    expect(chainable.filter).toHaveBeenCalledWith("isOnlineMeeting eq true");
+    // A filter is always applied (default 30-day window) — never an unfiltered
+    // /me/events call, which would return the user's entire calendar.
+    expect(chainable.filter).toHaveBeenCalledTimes(1);
+    const filterArg = chainable.filter.mock.calls[0]?.[0] as string;
+    expect(filterArg).toContain("start/dateTime ge");
+    expect(filterArg).toContain("start/dateTime le");
+    expect(filterArg).not.toContain("isOnlineMeeting");
   });
 
   it("applies subjectContains as client-side post-filter (case-insensitive)", async () => {
@@ -321,16 +327,16 @@ describe("findMeetings", () => {
     expect(mockApi).toHaveBeenCalledWith("/me/events");
     // 30 days before 2026-04-14T12:00:00Z = 2026-03-15T12:00:00Z
     expect(chainable.filter).toHaveBeenCalledWith(
-      "isOnlineMeeting eq true and start/dateTime ge '2026-03-15T12:00:00.000Z' and start/dateTime le '2026-04-14T12:00:00.000Z'"
+      "start/dateTime ge '2026-03-15T12:00:00.000Z' and start/dateTime le '2026-04-14T12:00:00.000Z'"
     );
   });
 
-  it("applies top of FIND_MEETINGS_CANDIDATE_CAP to the calendar query", async () => {
+  it("over-fetches (FIND_MEETINGS_CANDIDATE_CAP * 2) to compensate for client-side filter", async () => {
     const { graphService, chainable } = createMockGraphServiceWithApi([{ value: [] }]);
 
     await findMeetings(graphService, {}, () => NOW);
 
-    expect(chainable.top).toHaveBeenCalledWith(FIND_MEETINGS_CANDIDATE_CAP);
+    expect(chainable.top).toHaveBeenCalledWith(FIND_MEETINGS_CANDIDATE_CAP * 2);
   });
 
   it("respects explicit startDateTime / endDateTime when provided", async () => {
@@ -346,7 +352,7 @@ describe("findMeetings", () => {
     );
 
     expect(chainable.filter).toHaveBeenCalledWith(
-      "isOnlineMeeting eq true and start/dateTime ge '2026-04-01T00:00:00Z' and start/dateTime le '2026-04-14T23:59:59Z'"
+      "start/dateTime ge '2026-04-01T00:00:00Z' and start/dateTime le '2026-04-14T23:59:59Z'"
     );
   });
 
