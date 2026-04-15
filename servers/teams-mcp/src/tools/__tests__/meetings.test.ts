@@ -33,6 +33,8 @@ function createMockGraphServiceWithApi(getResultsInOrder: unknown[]) {
   const chainable: any = {};
   chainable.filter = vi.fn(() => chainable);
   chainable.top = vi.fn(() => chainable);
+  chainable.orderby = vi.fn(() => chainable);
+  chainable.select = vi.fn(() => chainable);
   chainable.header = vi.fn(() => chainable);
   chainable.get = mockGet;
   chainable.getStream = mockGet;
@@ -56,21 +58,55 @@ const NOW = new Date("2026-04-14T12:00:00Z");
 // listOnlineMeetings
 // ---------------------------------------------------------------------------
 
+/**
+ * Helper: builds a mocked queue for the calendar-based fetch.
+ * First response = calendar events; subsequent responses = onlineMeeting
+ * resolves (one per joinUrl-bearing event), in order.
+ */
+function calendarFetchResponses(
+  events: Array<{ id: string; subject?: string; joinUrl?: string }>,
+  resolvedById: Record<string, OnlineMeeting>
+): unknown[] {
+  const responses: unknown[] = [
+    {
+      value: events.map((e) => ({
+        id: e.id,
+        subject: e.subject,
+        isOnlineMeeting: true,
+        onlineMeeting: e.joinUrl ? { joinUrl: e.joinUrl } : null,
+      })),
+    },
+  ];
+  for (const e of events) {
+    if (!e.joinUrl) continue;
+    const resolved = resolvedById[e.id];
+    responses.push({ value: resolved ? [resolved] : [] });
+  }
+  return responses;
+}
+
 describe("listOnlineMeetings", () => {
-  it("calls /me/onlineMeetings and returns value array", async () => {
-    const meetings: OnlineMeeting[] = [
-      { id: "m1", subject: "Weekly Sync" },
-      { id: "m2", subject: "Planning" },
+  it("queries /me/events with isOnlineMeeting filter and returns resolved OnlineMeetings", async () => {
+    const events = [
+      { id: "e1", subject: "Weekly Sync", joinUrl: "https://teams.microsoft.com/l/meetup-join/1" },
+      { id: "e2", subject: "Planning", joinUrl: "https://teams.microsoft.com/l/meetup-join/2" },
     ];
-    const { graphService, mockApi } = createMockGraphServiceWithApi([{ value: meetings }]);
+    const resolved: Record<string, OnlineMeeting> = {
+      e1: { id: "m1", subject: "Weekly Sync" },
+      e2: { id: "m2", subject: "Planning" },
+    };
+    const { graphService, mockApi } = createMockGraphServiceWithApi(
+      calendarFetchResponses(events, resolved)
+    );
 
     const result = await listOnlineMeetings(graphService, {});
 
+    expect(mockApi).toHaveBeenCalledWith("/me/events");
     expect(mockApi).toHaveBeenCalledWith("/me/onlineMeetings");
-    expect(result).toEqual(meetings);
+    expect(result.map((m) => m.id)).toEqual(["m1", "m2"]);
   });
 
-  it("applies default top of LIST_MEETINGS_DEFAULT_TOP", async () => {
+  it("applies default top of LIST_MEETINGS_DEFAULT_TOP to the events query", async () => {
     const { graphService, chainable } = createMockGraphServiceWithApi([{ value: [] }]);
 
     await listOnlineMeetings(graphService, {});
@@ -86,7 +122,7 @@ describe("listOnlineMeetings", () => {
     expect(chainable.top).toHaveBeenCalledWith(LIST_MEETINGS_MAX_TOP);
   });
 
-  it("applies date range as Graph $filter", async () => {
+  it("applies date range as calendar start/dateTime filter", async () => {
     const { graphService, chainable } = createMockGraphServiceWithApi([{ value: [] }]);
 
     await listOnlineMeetings(graphService, {
@@ -95,35 +131,36 @@ describe("listOnlineMeetings", () => {
     });
 
     expect(chainable.filter).toHaveBeenCalledWith(
-      "startDateTime ge 2026-04-01T00:00:00Z and startDateTime le 2026-04-14T23:59:59Z"
+      "isOnlineMeeting eq true and start/dateTime ge '2026-04-01T00:00:00Z' and start/dateTime le '2026-04-14T23:59:59Z'"
     );
   });
 
-  it("applies only startDateTime filter when endDateTime is omitted", async () => {
-    const { graphService, chainable } = createMockGraphServiceWithApi([{ value: [] }]);
-
-    await listOnlineMeetings(graphService, {
-      startDateTime: "2026-04-01T00:00:00Z",
-    });
-
-    expect(chainable.filter).toHaveBeenCalledWith("startDateTime ge 2026-04-01T00:00:00Z");
-  });
-
-  it("does NOT call .filter when no dates provided", async () => {
+  it("always filters isOnlineMeeting even when no dates provided", async () => {
     const { graphService, chainable } = createMockGraphServiceWithApi([{ value: [] }]);
 
     await listOnlineMeetings(graphService, {});
 
-    expect(chainable.filter).not.toHaveBeenCalled();
+    expect(chainable.filter).toHaveBeenCalledWith("isOnlineMeeting eq true");
   });
 
   it("applies subjectContains as client-side post-filter (case-insensitive)", async () => {
-    const meetings: OnlineMeeting[] = [
-      { id: "m1", subject: "Weekly Sync" },
-      { id: "m2", subject: "Planning Meeting" },
-      { id: "m3", subject: "WEEKLY review" },
+    const events = [
+      { id: "e1", subject: "Weekly Sync", joinUrl: "https://teams.microsoft.com/l/meetup-join/1" },
+      {
+        id: "e2",
+        subject: "Planning Meeting",
+        joinUrl: "https://teams.microsoft.com/l/meetup-join/2",
+      },
+      { id: "e3", subject: "WEEKLY review", joinUrl: "https://teams.microsoft.com/l/meetup-join/3" },
     ];
-    const { graphService } = createMockGraphServiceWithApi([{ value: meetings }]);
+    const resolved: Record<string, OnlineMeeting> = {
+      e1: { id: "m1", subject: "Weekly Sync" },
+      e2: { id: "m2", subject: "Planning Meeting" },
+      e3: { id: "m3", subject: "WEEKLY review" },
+    };
+    const { graphService } = createMockGraphServiceWithApi(
+      calendarFetchResponses(events, resolved)
+    );
 
     const result = await listOnlineMeetings(graphService, {
       subjectContains: "weekly",
@@ -133,12 +170,31 @@ describe("listOnlineMeetings", () => {
     expect(result.map((m) => m.id)).toEqual(["m1", "m3"]);
   });
 
-  it("returns empty array when value is empty", async () => {
+  it("returns empty array when calendar returns no events", async () => {
     const { graphService } = createMockGraphServiceWithApi([{ value: [] }]);
 
     const result = await listOnlineMeetings(graphService, {});
 
     expect(result).toEqual([]);
+  });
+
+  it("skips events that cannot be resolved to an onlineMeeting", async () => {
+    const events = [
+      { id: "e1", subject: "A", joinUrl: "https://teams.microsoft.com/l/meetup-join/1" },
+      { id: "e2", subject: "B", joinUrl: "https://teams.microsoft.com/l/meetup-join/2" },
+    ];
+    // Only e1 resolves; e2 returns an empty value array.
+    const resolved: Record<string, OnlineMeeting> = {
+      e1: { id: "m1", subject: "A" },
+    };
+    const { graphService } = createMockGraphServiceWithApi(
+      calendarFetchResponses(events, resolved)
+    );
+
+    const result = await listOnlineMeetings(graphService, {});
+
+    expect(result).toHaveLength(1);
+    expect(result[0]?.id).toBe("m1");
   });
 });
 
@@ -257,19 +313,19 @@ describe("getMeetingTranscriptContent", () => {
 // ---------------------------------------------------------------------------
 
 describe("findMeetings", () => {
-  it("calls /me/onlineMeetings with 30-day default window when no dates provided", async () => {
+  it("queries /me/events with 30-day default window when no dates provided", async () => {
     const { graphService, mockApi, chainable } = createMockGraphServiceWithApi([{ value: [] }]);
 
     await findMeetings(graphService, {}, () => NOW);
 
-    expect(mockApi).toHaveBeenCalledWith("/me/onlineMeetings");
+    expect(mockApi).toHaveBeenCalledWith("/me/events");
     // 30 days before 2026-04-14T12:00:00Z = 2026-03-15T12:00:00Z
     expect(chainable.filter).toHaveBeenCalledWith(
-      "startDateTime ge 2026-03-15T12:00:00.000Z and startDateTime le 2026-04-14T12:00:00.000Z"
+      "isOnlineMeeting eq true and start/dateTime ge '2026-03-15T12:00:00.000Z' and start/dateTime le '2026-04-14T12:00:00.000Z'"
     );
   });
 
-  it("applies top of FIND_MEETINGS_CANDIDATE_CAP", async () => {
+  it("applies top of FIND_MEETINGS_CANDIDATE_CAP to the calendar query", async () => {
     const { graphService, chainable } = createMockGraphServiceWithApi([{ value: [] }]);
 
     await findMeetings(graphService, {}, () => NOW);
@@ -290,17 +346,25 @@ describe("findMeetings", () => {
     );
 
     expect(chainable.filter).toHaveBeenCalledWith(
-      "startDateTime ge 2026-04-01T00:00:00Z and startDateTime le 2026-04-14T23:59:59Z"
+      "isOnlineMeeting eq true and start/dateTime ge '2026-04-01T00:00:00Z' and start/dateTime le '2026-04-14T23:59:59Z'"
     );
   });
 
   it("returns top-N ranked results (default limit)", async () => {
-    const meetings: OnlineMeeting[] = Array.from({ length: 20 }, (_, i) => ({
-      id: `m${i}`,
+    const events = Array.from({ length: 20 }, (_, i) => ({
+      id: `e${i}`,
       subject: `Meeting ${i}`,
-      startDateTime: NOW.toISOString(),
+      joinUrl: `https://teams.microsoft.com/l/meetup-join/${i}`,
     }));
-    const { graphService } = createMockGraphServiceWithApi([{ value: meetings }]);
+    const resolved: Record<string, OnlineMeeting> = Object.fromEntries(
+      events.map((e, i) => [
+        e.id,
+        { id: `m${i}`, subject: e.subject, startDateTime: NOW.toISOString() },
+      ])
+    );
+    const { graphService } = createMockGraphServiceWithApi(
+      calendarFetchResponses(events, resolved)
+    );
 
     const result = await findMeetings(graphService, { query: "Meeting" }, () => NOW);
 
@@ -308,12 +372,20 @@ describe("findMeetings", () => {
   });
 
   it("clamps limit to FIND_MEETINGS_MAX_LIMIT", async () => {
-    const meetings: OnlineMeeting[] = Array.from({ length: 30 }, (_, i) => ({
-      id: `m${i}`,
+    const events = Array.from({ length: 30 }, (_, i) => ({
+      id: `e${i}`,
       subject: `Team Meeting ${i}`,
-      startDateTime: NOW.toISOString(),
+      joinUrl: `https://teams.microsoft.com/l/meetup-join/${i}`,
     }));
-    const { graphService } = createMockGraphServiceWithApi([{ value: meetings }]);
+    const resolved: Record<string, OnlineMeeting> = Object.fromEntries(
+      events.map((e, i) => [
+        e.id,
+        { id: `m${i}`, subject: e.subject, startDateTime: NOW.toISOString() },
+      ])
+    );
+    const { graphService } = createMockGraphServiceWithApi(
+      calendarFetchResponses(events, resolved)
+    );
 
     const result = await findMeetings(
       graphService,
@@ -325,14 +397,19 @@ describe("findMeetings", () => {
   });
 
   it("returns ScoredMeetings with score and matchReasons", async () => {
-    const meetings: OnlineMeeting[] = [
+    const events = [
       {
-        id: "m1",
+        id: "e1",
         subject: "Quarterly Review",
-        startDateTime: NOW.toISOString(),
+        joinUrl: "https://teams.microsoft.com/l/meetup-join/1",
       },
     ];
-    const { graphService } = createMockGraphServiceWithApi([{ value: meetings }]);
+    const resolved: Record<string, OnlineMeeting> = {
+      e1: { id: "m1", subject: "Quarterly Review", startDateTime: NOW.toISOString() },
+    };
+    const { graphService } = createMockGraphServiceWithApi(
+      calendarFetchResponses(events, resolved)
+    );
 
     const result = await findMeetings(graphService, { query: "Quarterly Review" }, () => NOW);
 

@@ -12,9 +12,12 @@ import type { CallTranscript, OnlineMeeting, TranscriptContent } from "../types/
 
 export const FIND_MEETINGS_DEFAULT_LIMIT = 10;
 export const FIND_MEETINGS_MAX_LIMIT = 25;
-export const FIND_MEETINGS_CANDIDATE_CAP = 200;
+// Candidate cap is constrained by the N+1 query pattern: each calendar event
+// requires a follow-up /me/onlineMeetings?$filter=joinWebUrl eq '...' lookup
+// to resolve to an OnlineMeeting with a stable id usable for transcript calls.
+export const FIND_MEETINGS_CANDIDATE_CAP = 50;
 export const FIND_MEETINGS_DEFAULT_WINDOW_DAYS = 30;
-export const LIST_MEETINGS_DEFAULT_TOP = 25;
+export const LIST_MEETINGS_DEFAULT_TOP = 20;
 export const LIST_MEETINGS_MAX_TOP = 50;
 
 // ---------- Shared helpers ---------------------------------------------------
@@ -23,18 +26,77 @@ function isJoinUrl(value: string): boolean {
   return value.trim().startsWith("https://teams.microsoft.com/");
 }
 
-function buildDateFilter(start?: string, end?: string): string | undefined {
-  const parts: string[] = [];
-  if (start) parts.push(`startDateTime ge ${start}`);
-  if (end) parts.push(`startDateTime le ${end}`);
-  return parts.length > 0 ? parts.join(" and ") : undefined;
-}
-
 function defaultWindow(now: Date): { start: string; end: string } {
   const end = new Date(now);
   const start = new Date(now);
   start.setUTCDate(start.getUTCDate() - FIND_MEETINGS_DEFAULT_WINDOW_DAYS);
   return { start: start.toISOString(), end: end.toISOString() };
+}
+
+interface CalendarEvent {
+  id?: string;
+  subject?: string;
+  onlineMeeting?: { joinUrl?: string } | null;
+  isOnlineMeeting?: boolean;
+}
+
+/**
+ * Lists the signed-in user's organized Teams meetings via the calendar endpoint.
+ *
+ * Microsoft Graph does NOT support listing /me/onlineMeetings directly — that
+ * endpoint is lookup-only (filter by joinWebUrl or videoTeleconferenceId, or
+ * GET by id). The correct delegated-auth path is to list /me/events with
+ * isOnlineMeeting=true, then resolve each event's joinUrl to an OnlineMeeting.
+ *
+ * This is an N+1 pattern: 1 events call + N join-URL lookups. Callers should
+ * cap `top` accordingly.
+ */
+async function fetchOrganizedMeetingsViaCalendar(
+  graphService: GraphService,
+  startDateTime: string | undefined,
+  endDateTime: string | undefined,
+  top: number
+): Promise<OnlineMeeting[]> {
+  const client = await graphService.getClient();
+
+  const filterParts = ["isOnlineMeeting eq true"];
+  if (startDateTime) filterParts.push(`start/dateTime ge '${startDateTime}'`);
+  if (endDateTime) filterParts.push(`start/dateTime le '${endDateTime}'`);
+  const eventsFilter = filterParts.join(" and ");
+
+  const eventsResponse = (await client
+    .api("/me/events")
+    .filter(eventsFilter)
+    .orderby("start/dateTime desc")
+    .top(top)
+    .select(
+      "id,subject,start,end,organizer,attendees,onlineMeeting,isOnlineMeeting,onlineMeetingProvider"
+    )
+    .get()) as { value?: CalendarEvent[] };
+
+  const events = eventsResponse?.value ?? [];
+
+  const joinUrls = events
+    .map((e) => e.onlineMeeting?.joinUrl)
+    .filter((url): url is string => typeof url === "string" && url.length > 0);
+
+  const resolved: OnlineMeeting[] = [];
+  for (const joinUrl of joinUrls) {
+    try {
+      const response = (await client
+        .api("/me/onlineMeetings")
+        .filter(`joinWebUrl eq '${joinUrl}'`)
+        .get()) as { value?: OnlineMeeting[] };
+      const items = response?.value ?? [];
+      if (items.length > 0 && items[0]) {
+        resolved.push(items[0]);
+      }
+    } catch (error) {
+      console.error(`Failed to resolve onlineMeeting for joinUrl ${joinUrl}:`, error);
+    }
+  }
+
+  return resolved;
 }
 
 // ---------- listOnlineMeetings ----------------------------------------------
@@ -52,17 +114,12 @@ export async function listOnlineMeetings(
 ): Promise<OnlineMeeting[]> {
   const top = Math.min(params.top ?? LIST_MEETINGS_DEFAULT_TOP, LIST_MEETINGS_MAX_TOP);
 
-  const client = await graphService.getClient();
-  let request: any = client.api("/me/onlineMeetings");
-
-  const filter = buildDateFilter(params.startDateTime, params.endDateTime);
-  if (filter) {
-    request = request.filter(filter);
-  }
-  request = request.top(top);
-
-  const response = (await request.get()) as { value?: OnlineMeeting[] };
-  let items: OnlineMeeting[] = response?.value ?? [];
+  let items = await fetchOrganizedMeetingsViaCalendar(
+    graphService,
+    params.startDateTime,
+    params.endDateTime,
+    top
+  );
 
   if (params.subjectContains) {
     const needle = params.subjectContains.toLowerCase();
@@ -167,14 +224,12 @@ export async function findMeetings(
     end = win.end;
   }
 
-  const client = await graphService.getClient();
-  let request: any = client.api("/me/onlineMeetings");
-  const filter = buildDateFilter(start, end);
-  if (filter) request = request.filter(filter);
-  request = request.top(FIND_MEETINGS_CANDIDATE_CAP);
-
-  const response = (await request.get()) as { value?: OnlineMeeting[] };
-  const candidates: OnlineMeeting[] = response?.value ?? [];
+  const candidates = await fetchOrganizedMeetingsViaCalendar(
+    graphService,
+    start,
+    end,
+    FIND_MEETINGS_CANDIDATE_CAP
+  );
 
   const criteria: MeetingSearchCriteria = {};
   if (params.query !== undefined) criteria.query = params.query;

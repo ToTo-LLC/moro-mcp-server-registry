@@ -19,6 +19,7 @@ export const READ_ONLY_SCOPES = [
   "ChannelMessage.Read.All",
   "TeamMember.Read.All",
   "Chat.Read",
+  "Calendars.Read",
   "OnlineMeetings.Read.All",
   "OnlineMeetingTranscript.Read.All",
 ];
