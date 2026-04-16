@@ -206,9 +206,13 @@ export async function getMeetingTranscriptContent(
   params: GetMeetingTranscriptContentParams
 ): Promise<TranscriptContent> {
   const client = await graphService.getClient();
+  // Without responseType("text"), the Graph SDK returns a Response/ReadableStream
+  // for non-JSON payloads, which stringifies to "[object ReadableStream]"
+  // instead of the VTT body. Force text parsing.
   const raw = await client
     .api(`/me/onlineMeetings/${params.meetingId}/transcripts/${params.transcriptId}/content`)
     .header("Accept", "text/vtt")
+    .responseType("text" as any)
     .get();
 
   let content: string;

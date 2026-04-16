@@ -36,6 +36,7 @@ function createMockGraphServiceWithApi(getResultsInOrder: unknown[]) {
   chainable.orderby = vi.fn(() => chainable);
   chainable.select = vi.fn(() => chainable);
   chainable.header = vi.fn(() => chainable);
+  chainable.responseType = vi.fn(() => chainable);
   chainable.get = mockGet;
   chainable.getStream = mockGet;
 
@@ -296,6 +297,7 @@ describe("getMeetingTranscriptContent", () => {
 
     expect(mockApi).toHaveBeenCalledWith("/me/onlineMeetings/m1/transcripts/t1/content");
     expect(chainable.header).toHaveBeenCalledWith("Accept", "text/vtt");
+    expect(chainable.responseType).toHaveBeenCalledWith("text");
     expect(result).toEqual({ format: "vtt", content: vttContent });
   });
 
