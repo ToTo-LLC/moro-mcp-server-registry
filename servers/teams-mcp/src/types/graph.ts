@@ -233,5 +233,16 @@ export interface CallTranscript {
 
 export interface TranscriptContent {
   format: "vtt";
+  /** The requested slice of the transcript (may be partial; see `truncated`). */
   content: string;
+  /** Total size of the full transcript in characters. */
+  totalChars: number;
+  /** Character offset at which this slice begins. */
+  startOffset: number;
+  /** Character offset at which this slice ends (exclusive). */
+  endOffset: number;
+  /** True when `endOffset < totalChars` — use `nextOffset` to fetch more. */
+  truncated: boolean;
+  /** When truncated, pass this as `startOffset` on the next call. */
+  nextOffset?: number;
 }

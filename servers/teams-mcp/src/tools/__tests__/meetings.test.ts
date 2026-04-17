@@ -286,7 +286,7 @@ describe("listMeetingTranscripts", () => {
 // ---------------------------------------------------------------------------
 
 describe("getMeetingTranscriptContent", () => {
-  it("calls correct path with Accept: text/vtt header and returns vtt content", async () => {
+  it("calls correct path with Accept: text/vtt header and returns full vtt under the cap", async () => {
     const vttContent = "WEBVTT\n\n00:00:00.000 --> 00:00:02.000\nHello world";
     const { graphService, mockApi, chainable } = createMockGraphServiceWithApi([vttContent]);
 
@@ -298,7 +298,13 @@ describe("getMeetingTranscriptContent", () => {
     expect(mockApi).toHaveBeenCalledWith("/me/onlineMeetings/m1/transcripts/t1/content");
     expect(chainable.header).toHaveBeenCalledWith("Accept", "text/vtt");
     expect(chainable.responseType).toHaveBeenCalledWith("text");
-    expect(result).toEqual({ format: "vtt", content: vttContent });
+    expect(result.format).toBe("vtt");
+    expect(result.content).toBe(vttContent);
+    expect(result.totalChars).toBe(vttContent.length);
+    expect(result.startOffset).toBe(0);
+    expect(result.endOffset).toBe(vttContent.length);
+    expect(result.truncated).toBe(false);
+    expect(result.nextOffset).toBeUndefined();
   });
 
   it("handles Buffer-like return value by converting to string", async () => {
@@ -313,6 +319,76 @@ describe("getMeetingTranscriptContent", () => {
     expect(result.format).toBe("vtt");
     expect(typeof result.content).toBe("string");
     expect(result.content.length).toBeGreaterThan(0);
+  });
+
+  it("truncates to default max chars and returns nextOffset", async () => {
+    const hugeVtt = "x".repeat(120_000);
+    const { graphService } = createMockGraphServiceWithApi([hugeVtt]);
+
+    const result = await getMeetingTranscriptContent(graphService, {
+      meetingId: "m1",
+      transcriptId: "t1",
+    });
+
+    // Default is 50_000
+    expect(result.content.length).toBe(50_000);
+    expect(result.totalChars).toBe(120_000);
+    expect(result.startOffset).toBe(0);
+    expect(result.endOffset).toBe(50_000);
+    expect(result.truncated).toBe(true);
+    expect(result.nextOffset).toBe(50_000);
+  });
+
+  it("respects custom startOffset and maxChars to page through transcripts", async () => {
+    const hugeVtt = "x".repeat(120_000);
+    const { graphService } = createMockGraphServiceWithApi([hugeVtt]);
+
+    const result = await getMeetingTranscriptContent(graphService, {
+      meetingId: "m1",
+      transcriptId: "t1",
+      startOffset: 50_000,
+      maxChars: 30_000,
+    });
+
+    expect(result.content.length).toBe(30_000);
+    expect(result.startOffset).toBe(50_000);
+    expect(result.endOffset).toBe(80_000);
+    expect(result.truncated).toBe(true);
+    expect(result.nextOffset).toBe(80_000);
+  });
+
+  it("clamps maxChars to the absolute ceiling", async () => {
+    const hugeVtt = "x".repeat(1_200_000);
+    const { graphService } = createMockGraphServiceWithApi([hugeVtt]);
+
+    const result = await getMeetingTranscriptContent(graphService, {
+      meetingId: "m1",
+      transcriptId: "t1",
+      maxChars: 999_999_999,
+    });
+
+    // Clamped to TRANSCRIPT_ABSOLUTE_MAX_CHARS = 500_000
+    expect(result.content.length).toBe(500_000);
+    expect(result.endOffset).toBe(500_000);
+    expect(result.truncated).toBe(true);
+  });
+
+  it("marks non-truncated when final slice reaches totalChars", async () => {
+    const vtt = "x".repeat(120_000);
+    const { graphService } = createMockGraphServiceWithApi([vtt]);
+
+    const result = await getMeetingTranscriptContent(graphService, {
+      meetingId: "m1",
+      transcriptId: "t1",
+      startOffset: 100_000,
+      maxChars: 50_000,
+    });
+
+    expect(result.startOffset).toBe(100_000);
+    expect(result.endOffset).toBe(120_000);
+    expect(result.content.length).toBe(20_000);
+    expect(result.truncated).toBe(false);
+    expect(result.nextOffset).toBeUndefined();
   });
 });
 

@@ -19,6 +19,11 @@ export const FIND_MEETINGS_CANDIDATE_CAP = 50;
 export const FIND_MEETINGS_DEFAULT_WINDOW_DAYS = 30;
 export const LIST_MEETINGS_DEFAULT_TOP = 20;
 export const LIST_MEETINGS_MAX_TOP = 50;
+// Transcripts are WebVTT text. A 90-minute meeting is ~100-300KB. Including
+// the full text in every subsequent LLM turn blows both context and backend
+// memory, so we cap the default slice and let callers page explicitly.
+export const TRANSCRIPT_DEFAULT_MAX_CHARS = 50_000;
+export const TRANSCRIPT_ABSOLUTE_MAX_CHARS = 500_000;
 
 // ---------- Shared helpers ---------------------------------------------------
 
@@ -199,6 +204,11 @@ export async function listMeetingTranscripts(
 export interface GetMeetingTranscriptContentParams {
   meetingId: string;
   transcriptId: string;
+  /** Character offset to begin reading from. Default 0. */
+  startOffset?: number | undefined;
+  /** Maximum chars to return. Default TRANSCRIPT_DEFAULT_MAX_CHARS.
+   *  Clamped to TRANSCRIPT_ABSOLUTE_MAX_CHARS. */
+  maxChars?: number | undefined;
 }
 
 export async function getMeetingTranscriptContent(
@@ -215,16 +225,35 @@ export async function getMeetingTranscriptContent(
     .responseType("text" as any)
     .get();
 
-  let content: string;
+  let full: string;
   if (typeof raw === "string") {
-    content = raw;
+    full = raw;
   } else if (raw != null) {
-    content = String(raw);
+    full = String(raw);
   } else {
-    content = "";
+    full = "";
   }
 
-  return { format: "vtt", content };
+  const totalChars = full.length;
+  const startOffset = Math.max(0, Math.floor(params.startOffset ?? 0));
+  const maxChars = Math.min(
+    Math.max(1, Math.floor(params.maxChars ?? TRANSCRIPT_DEFAULT_MAX_CHARS)),
+    TRANSCRIPT_ABSOLUTE_MAX_CHARS
+  );
+  const endOffset = Math.min(totalChars, startOffset + maxChars);
+  const content = full.slice(startOffset, endOffset);
+  const truncated = endOffset < totalChars;
+
+  const result: TranscriptContent = {
+    format: "vtt",
+    content,
+    totalChars,
+    startOffset,
+    endOffset,
+    truncated,
+  };
+  if (truncated) result.nextOffset = endOffset;
+  return result;
 }
 
 // ---------- findMeetings (fuzzy multi-criteria) -----------------------------
@@ -517,10 +546,31 @@ export function registerMeetingTools(
     {
       title: "Get Meeting Transcript Content",
       description:
-        "Fetch the full WebVTT content of a specific meeting transcript, including speaker attribution (e.g. <v Alice Example>). Use list_meeting_transcripts first to get the transcriptId.",
+        "Fetch WebVTT transcript content with speaker attribution (e.g. <v Alice Example>). " +
+        `Returns at most ${TRANSCRIPT_DEFAULT_MAX_CHARS.toLocaleString()} characters per call by default ` +
+        "to avoid overwhelming context. For long meetings, the response will be marked `truncated: true` " +
+        "with a `nextOffset` you can pass as `startOffset` to fetch the next slice. Do NOT request the " +
+        "full transcript (large `maxChars`) unless the user explicitly asks for the complete verbatim " +
+        "content — summarizing from a single default-sized slice is usually sufficient. Use " +
+        "list_meeting_transcripts first to get the transcriptId.",
       inputSchema: {
         meetingId: z.string().describe("Meeting ID"),
         transcriptId: z.string().describe("Transcript ID from list_meeting_transcripts"),
+        startOffset: z
+          .number()
+          .int()
+          .min(0)
+          .optional()
+          .describe("Character offset to start reading from. Default 0."),
+        maxChars: z
+          .number()
+          .int()
+          .min(1)
+          .max(TRANSCRIPT_ABSOLUTE_MAX_CHARS)
+          .optional()
+          .describe(
+            `Max chars to return. Default ${TRANSCRIPT_DEFAULT_MAX_CHARS}, capped at ${TRANSCRIPT_ABSOLUTE_MAX_CHARS}.`
+          ),
       },
       annotations: {
         readOnlyHint: true,
@@ -532,11 +582,16 @@ export function registerMeetingTools(
     async (args) => {
       try {
         const result = await getMeetingTranscriptContent(graphService, args);
+        const header =
+          `# Meeting Transcript (chars ${result.startOffset}–${result.endOffset} of ${result.totalChars})\n` +
+          (result.truncated
+            ? `# TRUNCATED — call again with startOffset=${result.nextOffset} for the next slice.\n\n`
+            : "# Complete.\n\n");
         return {
           content: [
             {
               type: "text" as const,
-              text: result.content || "(empty transcript)",
+              text: header + (result.content || "(empty transcript)"),
             },
           ],
         };
