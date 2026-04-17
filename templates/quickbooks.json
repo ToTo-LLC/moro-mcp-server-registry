@@ -11,10 +11,9 @@
   "org_auth_type": "oauth2",
   "user_auth_type": "none",
   "oauth_config": {
-    "auth_url": "https://appcenter.intuit.com/connect/oauth2",
+    "authorization_url": "https://appcenter.intuit.com/connect/oauth2",
     "token_url": "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
-    "scopes": ["com.intuit.quickbooks.accounting"],
-    "redirect_uri": "http://localhost:8000/callback"
+    "scopes": "com.intuit.quickbooks.accounting"
   },
   "credentials_needed": ["QBO_CLIENT_ID", "QBO_CLIENT_SECRET"],
   "user_auth_instructions": null,
