@@ -3,11 +3,11 @@
 import { promises as fs } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import {
-  type AuthenticationResult,
-  type Configuration,
-  PublicClientApplication,
-} from "@azure/msal-node";
+// NOTE: @azure/msal-node is only needed for the `authenticate` CLI
+// subcommand. We keep the types at the top (free) but defer the value
+// import into `authenticate()` so the MCP server path (the common one)
+// doesn't pay for it at startup.
+import type { AuthenticationResult, Configuration } from "@azure/msal-node";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { cachePlugin } from "./msal-cache.js";
@@ -51,6 +51,9 @@ async function authenticate(readOnly: boolean) {
 
   try {
     console.log("\n📱 Using device code flow...");
+
+    // Dynamic import keeps @azure/msal-node out of the MCP server cold-start.
+    const { PublicClientApplication } = await import("@azure/msal-node");
 
     const msalConfig: Configuration = {
       auth: {
@@ -186,13 +189,22 @@ async function logout() {
 
 // MCP Server setup
 async function startMcpServer(readOnly: boolean) {
+  // Startup timing (to stderr, so the spawning parent process can see how
+  // long cold-start took and whether to increase its initialize timeout).
+  const startupStart = Date.now();
+  const stamp = (label: string) =>
+    console.error(`[teams-mcp] ${label} +${Date.now() - startupStart}ms`);
+
+  stamp("startup begin");
+
   // Create MCP server
   const server = new McpServer({
     name: "teams-mcp",
     version: "1.0.0",
   });
 
-  // Initialize Graph service (singleton)
+  // Initialize Graph service (singleton — does NOT do network I/O here;
+  // the first tool call will lazy-initialize MSAL / refresh token).
   const graphService = GraphService.getInstance();
   graphService.readOnlyMode = readOnly;
 
@@ -223,7 +235,10 @@ async function startMcpServer(readOnly: boolean) {
     }
   }
 
-  // Register all tools (write tools are skipped when readOnly is true)
+  stamp("auth check done");
+
+  // Register all tools (write tools are skipped when readOnly is true).
+  // Tool registration is synchronous and does not perform network I/O.
   registerAuthTools(server, graphService, readOnly);
   registerUsersTools(server, graphService, readOnly);
   registerTeamsTools(server, graphService, readOnly);
@@ -231,9 +246,14 @@ async function startMcpServer(readOnly: boolean) {
   registerSearchTools(server, graphService, readOnly);
   registerMeetingTools(server, graphService, readOnly);
 
-  // Start server
+  stamp("tools registered");
+
+  // Connect the stdio transport LAST, after tools are registered so
+  // the initial `list_tools` response (issued by some clients right
+  // after `initialize`) returns the full catalog.
   const transport = new StdioServerTransport();
   await server.connect(transport);
+  stamp(`ready${readOnly ? " (read-only)" : ""}`);
   console.error(`Microsoft Graph MCP Server started${readOnly ? " (read-only mode)" : ""}`);
 }
 
