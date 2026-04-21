@@ -31,6 +31,46 @@ function isJoinUrl(value: string): boolean {
   return value.trim().startsWith("https://teams.microsoft.com/");
 }
 
+/**
+ * URL-encode a meeting or transcript ID for interpolation into a Graph path.
+ *
+ * The Microsoft Graph SDK's ``.api(path)`` does NOT automatically encode
+ * path segments. Meeting IDs from Graph are base64-encoded strings that may
+ * contain ``=`` padding, and in rare cases other URL-reserved characters.
+ * Without encoding, those get interpreted as URL metacharacters and Graph
+ * returns ``3004: Specified meeting is not found`` even though the ID is
+ * valid. Using ``encodeURIComponent`` is a safe defensive measure — Graph
+ * accepts percent-encoded IDs and IDs without percent-encoding when the
+ * content happens to be all URL-safe.
+ */
+function encodePathId(id: string): string {
+  return encodeURIComponent(id);
+}
+
+/**
+ * Wrap a Graph-SDK call that references a meeting by ID to surface a
+ * clearer error when Graph returns ``3004: Specified meeting is not found``.
+ *
+ * Code 3004 is misleading on the transcripts endpoint: it usually means
+ * "this meeting exists but does not have transcripts enabled / the
+ * signed-in user is not the organizer so Graph denies transcript access"
+ * rather than "this ID is wrong". The raw error causes the LLM to retry
+ * with ``get_online_meeting`` and fail again; replacing it with an
+ * actionable hint short-circuits that loop.
+ */
+function rewriteMeetingNotFoundError(error: unknown): unknown {
+  const msg = error instanceof Error ? error.message : String(error ?? "");
+  if (!msg.includes("3004")) return error;
+  const hint =
+    "Graph returned 3004 (meeting not found) on the transcripts endpoint. " +
+    "This usually means (1) the meeting has no transcript because transcription " +
+    "wasn't enabled for that meeting, or (2) the signed-in user is not the " +
+    "meeting organizer — delegated auth only exposes transcripts for meetings " +
+    "the user organized. Confirm with get_online_meeting; if that succeeds, " +
+    "there is most likely no transcript to read.";
+  return new Error(`${msg}\n\nDiagnostic: ${hint}`);
+}
+
 function defaultWindow(now: Date): { start: string; end: string } {
   const end = new Date(now);
   const start = new Date(now);
@@ -178,7 +218,9 @@ export async function getOnlineMeeting(
     return items.length > 0 ? (items[0] ?? null) : null;
   }
 
-  const meeting = (await client.api(`/me/onlineMeetings/${value}`).get()) as OnlineMeeting | null;
+  const meeting = (await client
+    .api(`/me/onlineMeetings/${encodePathId(value)}`)
+    .get()) as OnlineMeeting | null;
   return meeting ?? null;
 }
 
@@ -193,10 +235,14 @@ export async function listMeetingTranscripts(
   params: ListMeetingTranscriptsParams
 ): Promise<CallTranscript[]> {
   const client = await graphService.getClient();
-  const response = (await client
-    .api(`/me/onlineMeetings/${params.meetingId}/transcripts`)
-    .get()) as { value?: CallTranscript[] };
-  return response?.value ?? [];
+  try {
+    const response = (await client
+      .api(`/me/onlineMeetings/${encodePathId(params.meetingId)}/transcripts`)
+      .get()) as { value?: CallTranscript[] };
+    return response?.value ?? [];
+  } catch (error) {
+    throw rewriteMeetingNotFoundError(error);
+  }
 }
 
 // ---------- getMeetingTranscriptContent -------------------------------------
@@ -219,11 +265,19 @@ export async function getMeetingTranscriptContent(
   // Without responseType("text"), the Graph SDK returns a Response/ReadableStream
   // for non-JSON payloads, which stringifies to "[object ReadableStream]"
   // instead of the VTT body. Force text parsing.
-  const raw = await client
-    .api(`/me/onlineMeetings/${params.meetingId}/transcripts/${params.transcriptId}/content`)
-    .header("Accept", "text/vtt")
-    .responseType("text" as any)
-    .get();
+  let raw: unknown;
+  try {
+    raw = await client
+      .api(
+        `/me/onlineMeetings/${encodePathId(params.meetingId)}` +
+          `/transcripts/${encodePathId(params.transcriptId)}/content`
+      )
+      .header("Accept", "text/vtt")
+      .responseType("text" as any)
+      .get();
+  } catch (error) {
+    throw rewriteMeetingNotFoundError(error);
+  }
 
   let full: string;
   if (typeof raw === "string") {
