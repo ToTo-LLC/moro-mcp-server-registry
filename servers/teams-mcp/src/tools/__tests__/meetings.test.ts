@@ -279,6 +279,36 @@ describe("listMeetingTranscripts", () => {
 
     expect(result).toEqual([]);
   });
+
+  it("URL-encodes meeting IDs that contain base64 padding or special chars", async () => {
+    // Real Graph meeting IDs are base64-encoded strings that can contain '='
+    // padding (and rarely '/' or '+'). Without encoding these blow the URL
+    // parser on the Graph side and Graph returns 3004 even for valid IDs.
+    const rawId = "MSpkYzE3Njc0Mi04NGQ5==";
+    const { graphService, mockApi } = createMockGraphServiceWithApi([{ value: [] }]);
+
+    await listMeetingTranscripts(graphService, { meetingId: rawId });
+
+    expect(mockApi).toHaveBeenCalledWith(
+      `/me/onlineMeetings/${encodeURIComponent(rawId)}/transcripts`
+    );
+  });
+
+  it("rewrites Graph 3004 errors with an actionable diagnostic", async () => {
+    // When Graph returns 3004 on the transcripts endpoint it's usually
+    // "no transcript / not organizer" — not a malformed ID. The raw code
+    // leads the LLM to retry with a different lookup tool, wasting turns.
+    const { graphService } = createMockGraphServiceWithApi([]);
+    (graphService.getClient as any).mockResolvedValueOnce({
+      api: () => ({
+        get: vi.fn().mockRejectedValue(new Error("code: 3004 — Specified meeting is not found")),
+      }),
+    });
+
+    await expect(
+      listMeetingTranscripts(graphService, { meetingId: "m1" })
+    ).rejects.toThrow(/Diagnostic:.*transcription wasn't enabled.*not the meeting organizer/s);
+  });
 });
 
 // ---------------------------------------------------------------------------

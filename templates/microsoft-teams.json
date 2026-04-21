@@ -6,7 +6,7 @@
   "icon_url": "icons/microsoft-teams.png",
   "server_type": "stdio",
   "command": "npx",
-  "args": ["-y", "@totollc/teams-mcp@latest"],
+  "args": ["-y", "@totollc/teams-mcp@0.1.7"],
   "url": null,
   "org_auth_type": "oauth2",
   "user_auth_type": "oauth2",
