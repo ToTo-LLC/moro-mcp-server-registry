@@ -1,6 +1,12 @@
-import { type AccountInfo, PublicClientApplication } from "@azure/msal-node";
-import { Client } from "@microsoft/microsoft-graph-client";
+import type { AccountInfo, PublicClientApplication } from "@azure/msal-node";
+import type { Client } from "@microsoft/microsoft-graph-client";
 import { cachePlugin } from "../msal-cache.js";
+
+// Both @azure/msal-node and @microsoft/microsoft-graph-client are heavy
+// (multi-MB, lots of transitive deps). We defer loading them via dynamic
+// import until `initializeClient()` runs on the first tool invocation,
+// which is AFTER the MCP `initialize` handshake has completed. This keeps
+// MCP cold-start under a few hundred ms instead of several seconds.
 
 const CLIENT_ID = "14d82eec-204b-4c2f-b7e8-296a70dab67e";
 const AUTHORITY = "https://login.microsoftonline.com/common";
@@ -74,12 +80,24 @@ export class GraphService {
     if (this.isInitialized) return;
 
     try {
+      // Dynamically import the heavy Graph + MSAL libs here — they are NOT
+      // needed to complete the MCP `initialize` handshake, only to service
+      // actual tool invocations. This saves several seconds on cold-start
+      // when the module is spawned via `npx`.
+      const [
+        { Client: GraphClient },
+        { PublicClientApplication: MsalPublicClient },
+      ] = await Promise.all([
+        import("@microsoft/microsoft-graph-client"),
+        import("@azure/msal-node"),
+      ]);
+
       // Priority 1: AUTH_TOKEN environment variable (direct token injection)
       const envToken = process.env.AUTH_TOKEN;
       if (envToken) {
         const validatedToken = this.validateToken(envToken);
         if (validatedToken) {
-          this.client = Client.initWithMiddleware({
+          this.client = GraphClient.initWithMiddleware({
             authProvider: {
               getAccessToken: async () => validatedToken,
             },
@@ -90,7 +108,7 @@ export class GraphService {
       }
 
       // Priority 2: MSAL with cached refresh token for automatic token renewal
-      this.msalApp = new PublicClientApplication({
+      this.msalApp = new MsalPublicClient({
         auth: {
           clientId: CLIENT_ID,
           authority: AUTHORITY,
@@ -120,7 +138,7 @@ export class GraphService {
       this.tokenExpiresAt = result.expiresOn ?? undefined;
 
       // Create Graph client with MSAL-backed auth provider for automatic token refresh
-      this.client = Client.initWithMiddleware({
+      this.client = GraphClient.initWithMiddleware({
         authProvider: {
           getAccessToken: () => this.acquireToken(),
         },
