@@ -18,7 +18,7 @@
   },
   "credentials_needed": ["client_id", "client_secret", "developer_token"],
   "user_auth_instructions": "Click 'Connect' to link your Google account.\nYou'll be prompted to sign in and grant access to your Google Ads accounts.",
-  "setup_notes": "Uses Google's official Google Ads MCP server (google-ads-mcp).\n\nAdmin setup:\n1. Go to https://console.cloud.google.com/apis/credentials\n2. Create an OAuth 2.0 Client ID (type: Web application)\n3. Add authorized redirect URI:\n   {your_app_url}/api/v1/mcp-servers/{server_id}/oauth/callback\n4. Enable the Google Ads API\n5. Obtain a Google Ads API Developer Token from\n   https://ads.google.com/aw/apicenter\n6. Enter Client ID, Client Secret, and Developer Token\n\nProvides read-only access. Cannot modify campaigns, bids, or budgets.",
+  "setup_notes": "Uses Google's official Google Ads MCP server (google-ads-mcp).\n\nAdmin setup:\n1. Go to https://console.cloud.google.com/apis/credentials\n2. Create an OAuth 2.0 Client ID (type: Web application)\n3. Add authorized redirect URI:\n   {your_app_url}/api/v1/mcp-servers/oauth/callback\n4. Enable the Google Ads API\n5. Obtain a Google Ads API Developer Token from\n   https://ads.google.com/aw/apicenter\n6. Enter Client ID, Client Secret, and Developer Token\n\nProvides read-only access. Cannot modify campaigns, bids, or budgets.",
   "env_mapping": {
     "GOOGLE_ADS_OAUTH_ACCESS_TOKEN": "{{user_oauth_token}}",
     "GOOGLE_ADS_CLIENT_ID": "{{org_credential:client_id}}",
