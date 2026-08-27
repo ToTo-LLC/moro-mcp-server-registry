@@ -18,7 +18,7 @@
   },
   "credentials_needed": ["client_id", "client_secret"],
   "user_auth_instructions": "Click 'Connect' to link your Google account.\nYou'll be prompted to sign in and grant read-only access to your Google Analytics properties.",
-  "setup_notes": "Uses Google's official Google Analytics MCP server (analytics-mcp).\n\nAdmin setup:\n1. Go to https://console.cloud.google.com/apis/credentials\n2. Create an OAuth 2.0 Client ID (type: Web application)\n3. Add authorized redirect URI:\n   {your_app_url}/api/v1/mcp-servers/{server_id}/oauth/callback\n4. Enable the Google Analytics APIs:\n   - Google Analytics Admin API\n   - Google Analytics Data API\n5. Enter the Client ID and Client Secret\n\nProvides read-only access to GA4 data. Cannot modify GA settings.",
+  "setup_notes": "Uses Google's official Google Analytics MCP server (analytics-mcp).\n\nAdmin setup:\n1. Go to https://console.cloud.google.com/apis/credentials\n2. Create an OAuth 2.0 Client ID (type: Web application)\n3. Add authorized redirect URI:\n   {your_app_url}/api/v1/mcp-servers/oauth/callback\n4. Enable the Google Analytics APIs:\n   - Google Analytics Admin API\n   - Google Analytics Data API\n5. Enter the Client ID and Client Secret\n\nProvides read-only access to GA4 data. Cannot modify GA settings.",
   "env_mapping": {
     "GA_OAUTH_ACCESS_TOKEN": "{{user_oauth_token}}",
     "GA_OAUTH_CLIENT_ID": "{{org_credential:client_id}}",
