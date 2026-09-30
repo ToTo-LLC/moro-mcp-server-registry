@@ -11,10 +11,9 @@
   "org_auth_type": "oauth2",
   "user_auth_type": "none",
   "oauth_config": {
-    "auth_url": "https://login.xero.com/identity/connect/authorize",
+    "authorization_url": "https://login.xero.com/identity/connect/authorize",
     "token_url": "https://identity.xero.com/connect/token",
-    "scopes": ["openid", "profile", "email", "accounting.transactions", "accounting.contacts", "accounting.settings", "accounting.reports.read"],
-    "redirect_uri": null
+    "scopes": "openid profile email accounting.transactions accounting.contacts accounting.settings accounting.reports.read"
   },
   "credentials_needed": ["XERO_CLIENT_ID", "XERO_CLIENT_SECRET"],
   "user_auth_instructions": null,
