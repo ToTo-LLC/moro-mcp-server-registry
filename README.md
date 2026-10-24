@@ -2,6 +2,11 @@
 
 Pre-configured MCP server templates for the Moro AI Chat platform.
 
+## Environments
+
+- Test: None
+- Production: None
+
 ## Structure
 
 - `registry.json` — Index of all available server templates
