@@ -11,10 +11,9 @@
   "org_auth_type": "oauth2",
   "user_auth_type": "oauth2",
   "oauth_config": {
-    "auth_url": "https://www.dropbox.com/oauth2/authorize",
+    "authorization_url": "https://www.dropbox.com/oauth2/authorize",
     "token_url": "https://api.dropboxapi.com/oauth2/token",
-    "scopes": ["files.metadata.read", "files.content.read", "files.content.write", "sharing.read"],
-    "redirect_uri": null
+    "scopes": "files.metadata.read files.content.read files.content.write sharing.read"
   },
   "credentials_needed": ["DROPBOX_APP_KEY", "DROPBOX_APP_SECRET"],
   "user_auth_instructions": "Each user connects their own Dropbox account through OAuth. On first use, you will be redirected to Dropbox to authorize access.",
@@ -25,8 +24,6 @@
   },
   "tags": ["dropbox", "storage", "files", "cloud-storage", "documents", "sharing"],
   "source": {
-    "package": null,
-    "repository": null,
     "docs": "https://www.dropbox.com/developers/documentation"
   }
 }
